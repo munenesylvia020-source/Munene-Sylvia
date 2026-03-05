@@ -51,6 +51,17 @@ pennyprof/
   - `GET /api/v1/helb/disbursements/upcoming/` - Next expected payments
   - `GET /api/v1/helb/projections/` - Disbursement forecast
 
+## Team
+
+This project is being developed collaboratively. Current assignments are:
+
+- **You (developer)** – investments app and interest/portfolio logic
+- **Joanne** – accounts app (user registration, authentication, profiles)
+- **Cyrus** – finance app (wallets, transactions, M-Pesa integration)
+- **Hannington** – helb app (disbursement tracking and projection)
+
+Changes above map to the four Django apps in the repository.
+
 ## Key Features
 
 ### Atomic Transactions
@@ -99,6 +110,48 @@ python manage.py runserver
 ```
 
 The API will be available at `http://localhost:8000/api/v1/`
+
+## How to Run the Project
+
+### Quick Start (After Initial Setup)
+```bash
+# Activate virtual environment (if using venv)
+# On Windows PowerShell:
+c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\Activate.ps1
+
+# Or on Command Prompt:
+# c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\activate.bat
+
+# Start the Django development server
+python manage.py runserver
+
+# Access the application:
+# - API: http://localhost:8000/api/v1/
+# - Swagger Documentation: http://localhost:8000/api/docs/
+# - Admin Panel: http://localhost:8000/admin/
+```
+
+### Running with Virtual Environment
+```bash
+# If you have execution policy issues on Windows:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Then activate venv and run:
+c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\Activate.ps1
+python manage.py runserver
+```
+
+### Running Background Tasks (Optional)
+```bash
+# Start Redis server (required for Celery)
+redis-server
+
+# In a new terminal, start Celery worker:
+celery -A pennyprof worker -l info
+
+# In another terminal, start Celery beat scheduler:
+celery -A pennyprof beat -l info
+```
 
 ## API Endpoints
 
@@ -200,3 +253,7 @@ Key settings in `pennyprof/settings.py`:
 - **DRF Authentication**: Token-based (can be upgraded to JWT)
 - **CORS**: Configured for localhost (update for production)
 - **Database**: SQLite (upgrade to PostgreSQL for production)
+
+---
+
+**by yours truly artello the awesome**

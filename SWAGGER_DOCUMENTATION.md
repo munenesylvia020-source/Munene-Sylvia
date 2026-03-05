@@ -2,6 +2,19 @@
 
 Complete interactive API documentation for Premier Consolidated Capital Holdings backend.
 
+## Team
+
+This backend is being built collaboratively. App ownership:
+
+- **You (developer)** – investments app
+- **Joanne** – accounts
+- **Cyrus** – finance
+- **Hannington** – helb
+
+The Swagger UI reflects endpoints grouped by these applications.
+
+
+
 ## Access Documentation
 
 Once the server is running:
