@@ -9,7 +9,7 @@ Get the Premier Consolidated Capital Holdings backend running in 5 minutes.
 ## Step 1: Install Dependencies
 
 ```bash
-cd c:\Users\T.Oballa\Desktop\pennyprof
+cd c:where youve saved the doc
 pip install -r requirements.txt
 ```
 
