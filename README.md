@@ -55,9 +55,9 @@ pennyprof/
 
 This project is being developed collaboratively. Current assignments are:
 
-- **You (developer)** – investments app and interest/portfolio logic
+- **Artello** – investments app and interest/portfolio logic M-Pesa integration
 - **Joanne** – accounts app (user registration, authentication, profiles)
-- **Cyrus** – finance app (wallets, transactions, M-Pesa integration)
+- **Cyrus** – finance app (wallets, transactions, )
 - **Hannington** – helb app (disbursement tracking and projection)
 
 Changes above map to the four Django apps in the repository.
@@ -117,10 +117,10 @@ The API will be available at `http://localhost:8000/api/v1/`
 ```bash
 # Activate virtual environment (if using venv)
 # On Windows PowerShell:
-c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\Activate.ps1
+pennyprof\.venv\Scripts\Activate.ps1
 
 # Or on Command Prompt:
-# c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\activate.bat
+# \.venv\Scripts\activate.bat
 
 # Start the Django development server
 python manage.py runserver
@@ -136,8 +136,7 @@ python manage.py runserver
 # If you have execution policy issues on Windows:
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Then activate venv and run:
-c:\Users\T.Oballa\Desktop\pennyprof\.venv\Scripts\Activate.ps1
+# Then activate venv and run:\.venv\Scripts\Activate.ps1
 python manage.py runserver
 ```
 
