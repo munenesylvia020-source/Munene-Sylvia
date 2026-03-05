@@ -1,0 +1,202 @@
+# Premier Consolidated Capital Holdings - Backend Architecture
+
+A comprehensive Django backend for managing HELB disbursements and enabling micro-investing for Kenyan university students.
+
+## Project Structure
+
+```
+pennyprof/
+├── accounts/              # User authentication & student profiles
+├── finance/               # Ledger system, wallets, M-Pesa integration
+├── investments/           # 50/30/20 allocation & interest accrual
+├── helb/                  # HELB disbursement tracking & projections
+├── pennyprof/             # Project settings & URLs
+├── manage.py              # Django management script
+└── requirements.txt       # Python dependencies
+```
+
+## App Overview
+
+### 1. **accounts** - User Management
+- Custom `Student` user model with Firebase UID mapping
+- Profile management (registration, phone number, institution)
+- Student registration endpoint: `POST /api/v1/auth/students/`
+- Profile endpoint: `GET /api/v1/auth/students/me/`
+
+### 2. **finance** - Financial Ledger
+- `Wallet` model: Maintains student balance
+- `Transaction` model: Atomic ledger entries for all money movements
+- `BalanceSnapshot` model: Historical balance records for reconciliation
+- Endpoints:
+  - `GET /api/v1/finance/wallets/my_wallet/` - Get wallet balance
+  - `GET /api/v1/finance/transactions/` - Transaction history
+  - `POST /api/v1/finance/transactions/initiate_deposit/` - Start M-Pesa STK Push
+
+### 3. **investments** - Capital Growth Engine
+- `AllocationPlan` model: 50/30/20 rule breakdown
+- `InvestmentPosition` model: Student holdings in MMFs or simulated funds
+- `InterestAccrualLog` model: Audit trail for daily interest calculations
+- Endpoints:
+  - `POST /api/v1/invest/positions/allocate/` - Execute 50/30/20 split
+  - `GET /api/v1/invest/positions/portfolio_growth/` - Portfolio summary
+  - `GET /api/v1/invest/positions/daily_accruals/` - Daily interest forecast
+
+### 4. **helb** - Disbursement Management
+- `HELBAccount` model: Student's HELB loan account
+- `Disbursement` model: Individual disbursement entries
+- `DisbursementSchedule` model: Projected payment calendar
+- `DisbursementProjection` model: Forecasting & confidence levels
+- Endpoints:
+  - `GET /api/v1/helb/accounts/my_account/` - HELB account details
+  - `GET /api/v1/helb/disbursements/upcoming/` - Next expected payments
+  - `GET /api/v1/helb/projections/` - Disbursement forecast
+
+## Key Features
+
+### Atomic Transactions
+Every money movement is wrapped in database transactions to prevent data corruption:
+```python
+with transaction.atomic():
+    wallet.balance += amount
+    wallet.save()
+    Transaction.objects.create(...)
+```
+
+### Daily Interest Accrual
+Background task calculates interest based on Annual Effective Yield:
+```python
+daily_rate = annual_yield_percentage / 365 / 100
+daily_interest = current_value * daily_rate
+```
+
+### 50/30/20 Allocation
+Automatically splits HELB disbursements:
+- 50% (Tuition/Fixed): Automatically earmarked for institution
+- 30% (Upkeep/Variable): Allocated for rent, food, utilities
+- 20% (Capital/Investment): Moved to Investment Portal
+
+## Setup & Installation
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Create Migrations & Database
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 3. Create Superuser (Admin)
+```bash
+python manage.py createsuperuser
+```
+
+### 4. Run Development Server
+```bash
+python manage.py runserver
+```
+
+The API will be available at `http://localhost:8000/api/v1/`
+
+## API Endpoints
+
+### Authentication & Users
+```
+POST   /api/v1/auth/students/              - Register student
+GET    /api/v1/auth/students/me/           - Get current profile
+POST   /api/v1/auth/students/update_phone/ - Update phone number
+```
+
+### Finance & Wallet
+```
+GET    /api/v1/finance/wallets/my_wallet/              - Get wallet
+GET    /api/v1/finance/transactions/                   - Transaction history
+POST   /api/v1/finance/transactions/initiate_deposit/  - Deposit via M-Pesa
+```
+
+### Investments & Portfolio
+```
+POST   /api/v1/invest/positions/allocate/         - Allocate disbursement
+GET    /api/v1/invest/positions/portfolio_growth/ - Portfolio summary
+GET    /api/v1/invest/positions/daily_accruals/   - Daily interest forecast
+GET    /api/v1/invest/allocations/                - Allocation history
+```
+
+### HELB & Disbursements
+```
+GET    /api/v1/helb/accounts/my_account/       - HELB account info
+GET    /api/v1/helb/disbursements/              - Disbursement history
+GET    /api/v1/helb/disbursements/upcoming/     - Upcoming disbursements
+GET    /api/v1/helb/disbursements/overdue/      - Overdue disbursements
+GET    /api/v1/helb/projections/                - Disbursement projections
+```
+
+## TODO - Next Implementations
+
+### M-Pesa Integration (finance/views.py)
+- [ ] Implement Daraja API STK Push
+- [ ] Add webhook listener for C2B callbacks
+- [ ] Digital signature verification (Safaricom)
+
+### Firebase Auth Bridge (accounts/views.py)
+- [ ] JWT verification middleware
+- [ ] Student A data isolation from Student B
+
+### Interest Accrual Service
+- [ ] Celery background task for daily accrual
+- [ ] Cron scheduler for automatic execution
+
+### Portfolio Growth Charts
+- [ ] Historical NAV tracking
+- [ ] Performance vs benchmark comparison
+
+## Database Models Overview
+
+### Transaction Flow
+```
+Student Registration 
+  ↓ (signals)
+  Creates Wallet + HELBAccount
+  ↓
+HELB Disbursement
+  ↓
+Create Deposit Transaction
+  ↓
+Update Wallet Balance
+  ↓
+Create AllocationPlan (50/30/20)
+  ↓
+Create InvestmentPosition (20%)
+  ↓
+Daily Interest Accrual
+  ↓
+InterestAccrualLog (audit)
+```
+
+## Security Considerations
+
+1. **Custom User Model**: All auth flows use `accounts.Student` as the auth user
+2. **Firebase UID Mapping**: Bridge between Firebase Auth & Django DB
+3. **Transaction Atomicity**: All money movements are wrapped in `@transaction.atomic()`
+4. **Wallet Isolation**: Each student can only access their own wallet/transactions
+5. **Signature Verification**: M-Pesa callbacks must validate Safaricom signatures
+6. **DRF Permissions**: All endpoints require `IsAuthenticated` permission
+
+## Admin Panel
+
+Django admin at `/admin/` provides:
+- Student profile management
+- Manual transaction entry (for reconciliation)
+- HELB account setup & monitoring
+- Interest accrual inspection
+- Balance snapshot audits
+
+## Configuration
+
+Key settings in `pennyprof/settings.py`:
+- **Custom User Model**: `AUTH_USER_MODEL = 'accounts.Student'`
+- **DRF Authentication**: Token-based (can be upgraded to JWT)
+- **CORS**: Configured for localhost (update for production)
+- **Database**: SQLite (upgrade to PostgreSQL for production)
