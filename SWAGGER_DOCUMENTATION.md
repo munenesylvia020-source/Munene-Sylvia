@@ -6,7 +6,7 @@ Complete interactive API documentation for Premier Consolidated Capital Holdings
 
 This backend is being built collaboratively. App ownership:
 
-- **You (developer)** – investments app
+- **The ferrari fan** – investments app
 - **Joanne** – accounts
 - **Cyrus** – finance
 - **Hannington** – helb
