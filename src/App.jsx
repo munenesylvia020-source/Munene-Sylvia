@@ -26,7 +26,9 @@ function App() {
 
       </form>
       <br></br>
-      <p>Don't have an account?<Link to="src/pages/signup.jsx">Sign Up</Link></p>
+      <p>
+        Don't have an account?<a href=''>Sign Up</a>
+        </p>
     </div>
     </>
   )
