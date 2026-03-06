@@ -1,0 +1,20 @@
+:root {
+  /* Primary & Accent Colors */
+  --primary-color: #3A86FF;   /* Main buttons, highlights */
+  --accent-color: #3AE8FF;    /* Icons, progress bar fill */
+  --secondary-color: #513AFF; /* Headers, selected tabs */
+
+  /* Background & Neutral */
+  --bg-color: #F7F9FC;        /* Off-white background */
+  --card-bg: #FFFFFF;          /* Cards / containers */
+  --text-color: #1F1F1F;      /* Primary text */
+  --subtext-color: #555555;    /* Secondary / muted text */
+
+  /* Alerts */
+  --success-color: #2ECC71;   /* Budget safe / success */
+  --warning-color: #FFC107;   /* Approaching limit */
+  --error-color: #FF6B6B;     /* Over limit / error */
+
+  /* Typography */
+  --font-family: 'Roboto', sans-serif;
+}
