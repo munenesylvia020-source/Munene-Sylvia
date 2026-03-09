@@ -1,24 +1,73 @@
-import { useState } from 'react'
-import {  Routes, Route } from 'react-router-dom'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import "../styles/auth.css";
 
-function Signup() {
+function Signup(){
+
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    console.log("Signup",name,email,password);
+  }
+
   return(
-    <>
-    <h2>Create an account</h2>
-    <p>Start managing your budget today</p>
-    <form id='sign'>
-      <label for ="name">Name</label>
-      <input type="text" id="name" placeholder="Enter your name" required></input><br></br>
-      <label for ="email">Email</label>
-      <input type="email" id="email" placeholder="Enter your email" required></input><br></br>
-      <label for ="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required></input>  
-      <label for ="confirm">Confirm Password</label>
-      <input type="password" id="confirm" placeholder="Confirm your password" required></input>
-      <br></br><br></br>
-    </form>
-    </>
+
+    <div className="auth-container">
+
+      <div className="auth-card">
+
+        <h1 className="app-title">Create Account</h1>
+        <p className="subtitle">Start managing your HELB smarter.</p>
+
+        <form onSubmit={handleSubmit}>
+
+          <div className="input-group">
+            <label>Username</label>
+            <input
+              type="text"
+              placeholder="Your username"
+              value={name}
+              onChange={(e)=>setName(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="johndoe@email.com"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Create password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+            />
+          </div>
+
+          <button className="primary-btn">Create Account</button>
+
+          <p className="switch-text">
+            Already have an account?
+            <Link to="/login"> Login</Link>
+          </p>
+
+        </form>
+
+      </div>
+
+    </div>
+
   )
 }
 
-export default Signup
+export default Signup;

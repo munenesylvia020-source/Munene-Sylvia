@@ -1,68 +1,49 @@
+/* Global App Styles */
+
 #root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-    justify-content: center;
-    background-color: white;
+  font-family: var(--font-family);
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-.login {
+/* Reset common elements */
 
-  padding: 20px;
-  margin:30px;
-  background-color: 
-  #F7F9Fc;
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+/* Buttons baseline */
+
+button {
+  font-family: var(--font-family);
+  cursor: pointer;
   border: none;
-  border-radius: 25px;
-
-  /* display: flex;
-  flex-direction: column; */
-
-
-}
-h2{
-  color: #513AFF;
-  margin-bottom: 0px;
-  font-size: 30px;
 }
 
-label{
-  color: #1A1C1E;
-  margin-bottom: 0px;
+/* Inputs baseline */
 
+input {
+  font-family: var(--font-family);
 }
-::placeholder{
-  color: #707781;
+
+app-title {
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 6px;
 }
-form{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-input{
-  margin: 0px;
-  padding: 10px;
-  width: 200px;
-  border: none;
-  border-radius: 10px;
-  height: 30px;
-  color: black;
-  background-color:rgb(235, 232, 232) ;
-}
-p{
-  margin-top: 0px;
-  color: grey;
-}
-button{
-  padding: 10px;
-  width: 100px;
-  background-color: #3A86FF;
+
+link {
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 500;
 }
