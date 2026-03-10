@@ -16,7 +16,8 @@
 }
 
 .app-title{
-  color:var(--secondary-color);
+
+  color:#513AFF;
   text-align:center;
   margin-bottom:6px;
 }
