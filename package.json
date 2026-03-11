@@ -24,11 +24,15 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+<<<<<<< HEAD
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "vite": "^8.0.0-beta.13"
   },
   "overrides": {
     "vite": "^8.0.0-beta.13"
+=======
+    "vite": "^7.3.1"
+>>>>>>> d8aa9553451eaa167ee423c2bdcfdf218120443c
   }
 }
