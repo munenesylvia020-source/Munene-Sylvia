@@ -1,27 +1,42 @@
-/* src/styles/login.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
 
-/* Container styles */
-
-.login-container {
+/* Container styles - Perfect centering */
+.signup-container {
     min-height: 100vh;
+    width: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto; /* Allow scrolling on very small screens */
 }
 
 /* Card styles */
-.login-card {
+.signup-card {
     background: white;
     border-radius: 1rem;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px; /* Slightly wider for signup form */
     padding: 2.5rem;
     animation: slideUp 0.5s ease-out;
+    margin: auto;
 }
 
 @keyframes slideUp {
@@ -35,8 +50,8 @@
     }
 }
 
-/* Typography */
-.login-title {
+/* Typography - Centered text */
+.signup-title {
     font-size: 2rem;
     font-weight: 700;
     color: #333;
@@ -44,7 +59,7 @@
     margin-bottom: 0.5rem;
 }
 
-.login-subtitle {
+.signup-subtitle {
     color: #666;
     text-align: center;
     margin-bottom: 2rem;
@@ -53,7 +68,8 @@
 
 /* Form styles */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    width: 100%;
 }
 
 .form-label {
@@ -85,6 +101,14 @@
     font-size: 0.95rem;
 }
 
+/* Password hint */
+.password-hint {
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
 /* Error states */
 .input-error {
     border-color: #f56565 !important;
@@ -101,8 +125,41 @@
     font-weight: 500;
 }
 
+/* Terms and conditions */
+.terms-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+.terms-checkbox {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.terms-label {
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.terms-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 /* Button styles */
-.login-button {
+.signup-button {
     width: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -113,34 +170,38 @@
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 1rem;
     letter-spacing: 0.5px;
 }
 
-.login-button:hover {
+.signup-button:hover {
     transform: translateY(-2px);
-    /* transform: translateX(2px); */
     box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
-.login-button:active {
+.signup-button:active {
     transform: translateY(0);
 }
 
-.login-button:focus {
+.signup-button:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
 }
 
-/* Signup link */
-.signup-link {
+.signup-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Login link - Centered */
+.login-link {
     text-align: center;
     margin-top: 2rem;
     color: #666;
     font-size: 0.95rem;
 }
 
-.signup-link-text {
+.login-link-text {
     color: #667eea;
     font-weight: 600;
     text-decoration: none;
@@ -148,18 +209,42 @@
     margin-left: 0.25rem;
 }
 
-.signup-link-text:hover {
+.login-link-text:hover {
     color: #764ba2;
     text-decoration: underline;
 }
 
+/* Success message (optional) */
+.success-message {
+    background: #48bb78;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
-    .login-card {
+    .signup-card {
         padding: 2rem 1.5rem;
+        margin: 1rem;
     }
     
-    .login-title {
+    .signup-title {
         font-size: 1.75rem;
     }
     
@@ -167,52 +252,32 @@
         padding: 0.625rem 0.875rem;
     }
     
-    .login-button {
+    .signup-button {
         padding: 0.75rem;
+    }
+    
+    .terms-label {
+        font-size: 0.85rem;
     }
 }
 
-/* Optional: Add loading state styles */
-.login-button.loading {
-    opacity: 0.7;
-    cursor: not-allowed;
+/* Adjust for very short screens */
+@media (max-height: 700px) {
+    .signup-container {
+        align-items: flex-start;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
 }
 
-/* Optional: Add remember me checkbox styles if needed */
-.remember-me {
-    display: flex;
-    align-items: center;
-    margin: 1rem 0;
-}
-
-.remember-me input[type="checkbox"] {
-    width: auto;
-    margin-right: 0.5rem;
-    cursor: pointer;
-}
-
-.remember-me label {
-    color: #666;
-    font-size: 0.9rem;
-    cursor: pointer;
-}
-/* Alternative centering method */
-.login-container {
-    height: 100vh;
-    width: 100vw;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-}
-
-/* Or using grid */
-.login-container {
-    height: 100vh;
-    width: 100vw;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: grid;
-    place-items: center;  /* Centers both horizontally and vertically */
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+/* For very large screens */
+@media (min-width: 1920px) {
+    .signup-card {
+        max-width: 500px;
+        padding: 3rem;
+    }
+    
+    .signup-title {
+        font-size: 2.2rem;
+    }
 }
