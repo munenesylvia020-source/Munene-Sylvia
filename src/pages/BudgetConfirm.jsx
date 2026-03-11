@@ -1,24 +1,22 @@
+// src/pages/BudgetConfirm.jsx
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/budgetConfirm.css';
 
 const BudgetConfirm = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Get amount from navigation state or use default
-  const totalAmount = location.state?.totalAmount || 22000;
 
   const budgetData = {
-    totalAmount: totalAmount,
+    totalAmount: 22000,
     categories: [
-      { name: 'Rent', amount: Math.floor(totalAmount * 0.3), percentage: 30, color: '#4299e1' },
-      { name: 'Food', amount: Math.floor(totalAmount * 0.25), percentage: 25, color: '#48bb78' },
-      { name: 'Tuition & Academic', amount: Math.floor(totalAmount * 0.25), percentage: 25, color: '#ed8936' },
-      { name: 'Personal', amount: Math.floor(totalAmount * 0.15), percentage: 15, color: '#9f7aea' },
-      { name: 'Savings', amount: Math.floor(totalAmount * 0.05), percentage: 5, color: '#fc8181' }
+      { name: 'Rent', amount: 6600, percentage: 30, color: '#4299e1' },
+      { name: 'Food', amount: 5500, percentage: 25, color: '#48bb78' },
+      { name: 'Tuition & Academic', amount: 5500, percentage: 25, color: '#ed8936' },
+      { name: 'Savings', amount: 2200, percentage: 10, color: '#9f7aea' },
+      { name: 'Transport', amount: 2200, percentage: 10, color: '#fc8181' }
     ]
   };
+
   const handleConfirm = () => {
     console.log('Budget confirmed');
     alert('Budget confirmed! (demo)');

@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';  // Add useNavigate
 import '../styles/login.css';
@@ -35,7 +36,8 @@ const Login = () => {
     }
     return newErrors;
   };
-  // src/pages/Login.jsx (updated handleSubmit)
+
+
 const handleSubmit = (e) => {
   e.preventDefault();
   const newErrors = validateForm();
@@ -108,5 +110,3 @@ const handleSubmit = (e) => {
 };
 
 export default Login;
-
->>>>>>> d8aa9553451eaa167ee423c2bdcfdf218120443c

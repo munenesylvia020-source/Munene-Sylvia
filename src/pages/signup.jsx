@@ -1,3 +1,4 @@
+// src/pages/Signup.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/signup.css';  // Import CSS from styles folder
@@ -178,7 +179,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-
-export default Signup;
->>>>>>> d8aa9553451eaa167ee423c2bdcfdf218120443c

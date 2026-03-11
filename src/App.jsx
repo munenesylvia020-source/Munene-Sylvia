@@ -1,8 +1,8 @@
-
+// src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login';
 import Signup from './pages/signup';
-import HelbAmount from './pages/HelbAmount';      // New page
+import HelbAmount from './pages/HelbAmount'; 
 import BudgetConfirm from './pages/BudgetConfirm';
 
 function App() {
@@ -20,4 +20,3 @@ function App() {
 }
 
 export default App;
-
