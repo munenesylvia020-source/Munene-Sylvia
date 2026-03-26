@@ -1,0 +1,175 @@
+/* Import Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import './App.css';
+@import './styles/auth.css';
+@import './styles/login.css';
+@import './styles/signup.css';
+@import './styles/HelbAmount.css';
+@import './styles/budgetConfirm.css';
+@import './styles/budgetAdjust.css';
+@import './styles/allocation.css';
+@import './styles/dashboard.css';
+@import './styles/addExpense.css';
+@import './styles/activity.css';
+
+/* DESIGN SYSTEM */
+
+:root {
+
+  /* =====================
+     BRAND COLORS
+  ===================== */
+  --color-primary: #3A86FF;
+  --color-accent: #3AE8FF;
+  --color-secondary: #513AFF;
+  --color-background: #F7F9FC;
+
+  /* Gradient (page backgrounds & primary buttons) */
+  --color-grad-start: #667eea;
+  --color-grad-end:   #764ba2;
+
+  /* Single token for all full-page backgrounds — change here to retheme the whole app */
+  --page-bg: #F7F9FC;
+  --button-bg: #3A86FF;
+
+  /* Subtle grey gradient for inner sections (e.g. total-amount-section, amount-section) */
+  --color-section-bg:  #3A86FF;
+
+  /* Button background — shares the brand gradient */
+  --btn-bg: var(--button-bg);
+
+  /* =====================
+     STATUS COLORS
+  ===================== */
+  --color-error:   #f56565;
+  --color-success: #48bb78;
+
+  /* =====================
+     NEUTRALS
+  ===================== */
+  --color-white: #FFFFFF;
+
+  /* =====================
+     TEXT SHADES
+  ===================== */
+  --color-text-primary:     #1A1A1A;
+  --color-text-secondary:   #6C757D;
+  --color-text-heading:     #333333;
+  --color-text-label:       #555555;
+  --color-text-body:        #666666;
+  --color-text-hint:        #888888;
+  --color-text-dark:        #2d3748;
+  --color-text-muted:       #718096;
+  --color-text-subdued:     #4a5568;
+  --color-text-placeholder: #aaaaaa;
+
+  /* =====================
+     GREY SCALE
+  ===================== */
+  --color-grey-50:  #f7fafc;
+  --color-grey-100: #edf2f7;
+  --color-grey-200: #e2e8f0;
+  --color-grey-300: #cbd5e0;
+  --color-grey-400: #a0aec0;
+  --color-light-grey:  #E9ECEF;
+  --color-border-grey: #DEE2E6;
+
+  /* =====================
+     BUDGET CATEGORY COLORS
+  ===================== */
+  --color-cat-rent:      #4299e1;
+  --color-cat-food:      #48bb78;
+  --color-cat-tuition:   #ed8936;
+  --color-cat-savings:   #9f7aea;
+  --color-cat-transport: #fc8181;
+
+  /* =====================
+     RGB CHANNELS (for rgba() usage)
+  ===================== */
+  --color-primary-rgb:    58, 134, 255;
+  --color-grad-start-rgb: 102, 126, 234;
+  --color-error-rgb:      245, 101, 101;
+
+  /* =====================
+     TYPOGRAPHY
+  ===================== */
+  --font-family: 'Roboto', sans-serif;
+
+  /* =====================
+     SPACING
+  ===================== */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* =====================
+     BORDER RADIUS
+  ===================== */
+  --radius-small:  8px;
+  --radius-medium: 16px;
+  --radius-large:  24px;
+
+  /* =====================
+     SHADOWS
+  ===================== */
+  --shadow-card:     0 2px 8px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* RESET */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+/* GLOBAL BODY */
+
+body{
+  font-family: var(--font-family);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  min-height:100vh;
+  line-height:1.5;
+}
+
+/* LINKS */
+
+a{
+  text-decoration:none;
+  color: var(--color-primary);
+  font-weight:500;
+}
+
+a:hover{
+  color: var(--color-secondary);
+}
+
+/* BUTTON BASELINE */
+
+button{
+  font-family: var(--font-family);
+  border:none;
+  cursor:pointer;
+}
+
+/* INPUT BASELINE */
+
+input{
+  font-family: var(--font-family);
+}
+
+.primary-btn{
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+h1{
+  color: var(--color-secondary);
+}
+body{
+  background: var(--color-background);
+}
+

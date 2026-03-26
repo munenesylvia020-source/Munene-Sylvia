@@ -1,0 +1,49 @@
+/* Global App Styles */
+
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+/* Reset common elements */
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+/* Buttons baseline */
+
+button {
+  font-family: var(--font-family);
+  cursor: pointer;
+  border: none;
+}
+
+/* Inputs baseline */
+
+input {
+  font-family: var(--font-family);
+}
+
+app-title {
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+link {
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 500;
+}
