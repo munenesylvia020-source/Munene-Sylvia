@@ -10,6 +10,21 @@ A financial management web app for university students. Helps students track lum
 
 Students often struggle to manage large disbursements, leading to overspending and financial stress.
 
+## Features
+
+- 🔐 **User Authentication** - Secure signup and login with JWT tokens
+- 💰 **HELB Amount Input** - Enter your semester loan amount
+- 📊 **Smart Budget Allocation** - Automatic 50/30/20 style budgeting:
+  - Rent: 30%
+  - Food: 25%
+  - Tuition & Academic: 25%
+  - Personal: 10%
+  - Savings: 10%
+- 📈 **Dashboard** - View your budget breakdown and transaction history
+- 🗄️ **Persistent Storage** - All data stored securely in MariaDB
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile devices
+- 👤 **Profile Management** - User profile with logout functionality
+
 
 ## Solution / MVP
 
@@ -55,11 +70,34 @@ src/
 
 ```bash
 git clone https://github.com/munenesylvia020-source/Munene-Sylvia.git
-cd premier_capital_web
+cd web-react
 npm install
 npm run dev
 
 ```
+
+### Frontend
+- React 18
+- React Router DOM v6
+- CSS3 (Custom styling)
+- Vite (Build tool)
+
+### Backend
+- Node.js
+- Express.js
+- MariaDB (MySQL compatible)
+- JWT for authentication
+- bcrypt for password hashing
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
+- **MariaDB** (v10.5 or higher) - [Download](https://mariadb.org/download/)
+- **npm** or **yarn** (comes with Node.js)
+- **Git** (optional, for cloning)
+
 
 ## Future Enhancements
 
