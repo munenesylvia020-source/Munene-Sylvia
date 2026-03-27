@@ -18,7 +18,7 @@ Students often struggle to manage large disbursements, leading to overspending a
   - Rent: 30%
   - Food: 25%
   - Tuition & Academic: 25%
-  - Personal: 10%
+  - Personal: 10%mmit 
   - Savings: 10%
 - 📈 **Dashboard** - View your budget breakdown and transaction history
 - 🗄️ **Persistent Storage** - All data stored securely in MariaDB
