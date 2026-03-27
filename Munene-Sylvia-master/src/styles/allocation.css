@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+}
+
+.allocation-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+  background: var(--page-bg);
+}
+
+.allocation-card {
+  width: 100%;
+  max-width: 760px;
+  border-radius: 1rem;
+  padding: 2.4rem;
+  background: var(--color-white);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.allocation-logo {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.75rem;
+}
+
+.allocation-title {
+  color: var(--color-text-heading);
+  margin-bottom: 0.75rem;
+}
+
+.allocation-subtitle {
+  color: var(--color-text-body);
+  margin-bottom: 1.5rem;
+}
+
+.allocation-btn, .proceed-btn {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  border: none;
+  color: var(--color-white);
+  background: var(--btn-bg);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.allocation-btn:hover {
+  box-shadow: 0 10px 20px rgba(var(--color-grad-start-rgb), 0.3);
+}
+
+@media (max-width: 480px) {
+  .allocation-logo {
+    width: 76px;
+    height: 76px;
+  }
+}

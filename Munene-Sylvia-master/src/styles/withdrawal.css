@@ -1,0 +1,34 @@
+/* Withdrawal Modal Styles */
+/* Reuses styles from deposit.css and adds withdrawal-specific styles */
+
+.withdrawal-form {
+  /* Uses same structure as deposit-form from deposit.css */
+}
+
+.withdrawal-form .balance-info {
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+}
+
+.withdrawal-form .balance-info p {
+  color: #e65100;
+}
+
+.withdrawal-form .balance-info strong {
+  color: #ff6f00;
+}
+
+.withdrawal-form .submit-btn {
+  background: linear-gradient(135deg, #ff6f00 0%, #e65100 100%);
+}
+
+.withdrawal-form .submit-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(255, 111, 0, 0.3);
+}
+
+.withdrawal-form .info-text {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+  border-left: 3px solid #ff6f00;
+}

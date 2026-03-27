@@ -1,0 +1,185 @@
+/* BalanceCard Component Styles */
+
+.balance-card {
+  background: var(--color-grad-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-6);
+  color: var(--color-white);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  margin: var(--spacing-4);
+}
+
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+}
+
+.balance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4);
+  position: relative;
+  z-index: 1;
+}
+
+.balance-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin: 0;
+  color: var(--color-white);
+  opacity: 0.9;
+}
+
+.balance-icon {
+  color: var(--color-white);
+  opacity: 0.8;
+  transition: all var(--transition-fast);
+}
+
+.balance-card:hover .balance-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.balance-amount {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+  position: relative;
+  z-index: 1;
+}
+
+.currency {
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  opacity: 0.8;
+}
+
+.amount {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  line-height: 1;
+  background: linear-gradient(135deg, var(--color-white) 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.balance-actions {
+  display: flex;
+  gap: var(--spacing-3);
+  position: relative;
+  z-index: 1;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-5);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  justify-content: center;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+.btn:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.btn-deposit {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn-deposit:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-withdraw {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.btn-withdraw:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn svg {
+  transition: transform var(--transition-fast);
+}
+
+.btn:not(:disabled):hover svg {
+  transform: scale(1.1);
+}
+
+/* Pulse animation for low balance warning */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.balance-card.low-balance {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .balance-card {
+    margin: var(--spacing-2);
+    padding: var(--spacing-4);
+  }
+
+  .balance-amount {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .amount {
+    font-size: var(--text-3xl);
+  }
+
+  .balance-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    padding: var(--spacing-4) var(--spacing-6);
+  }
+}
