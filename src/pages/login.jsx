@@ -1,10 +1,9 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Add useNavigate
+import { Link, useNavigate } from 'react-router-dom';  
 import appLogo from '../assets/Penny Professor logo 1.png';
 
 const Login = () => {
-  const navigate = useNavigate();  // Add this hook
+  const navigate = useNavigate();  
   
   const [formData, setFormData] = useState({
     email: '',
@@ -42,8 +41,7 @@ const handleSubmit = (e) => {
   e.preventDefault();
   const newErrors = validateForm();
   if (Object.keys(newErrors).length === 0) {
-    console.log('Login submitted:', formData);
-    // Navigate to HELB amount page after successful login
+    console.log('Login submitted:', formData)
     navigate('/helb-amount');
   } else {
     setErrors(newErrors);

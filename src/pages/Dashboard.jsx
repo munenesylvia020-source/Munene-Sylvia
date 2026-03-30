@@ -15,6 +15,7 @@ export default function Dashboard() {
     <div className="dashboard-page">
       <section className="dashboard-shell">
         <div className="dashboard-toolbar">
+            <img src={appLogo} alt="Penny Professor logo" className="allocation-logo" />
           <button type="button" className="dashboard-icon-btn" aria-label="Profile">
             <FiUser />
           </button>
@@ -25,7 +26,7 @@ export default function Dashboard() {
 
         <div className="dashboard-header-row">
           <div className="dashboard-header">
-             <img src={appLogo} alt="Penny Professor logo" className="allocation-logo" />
+           
             <h2 className="dashboard-title">My Funds</h2>
             <p className="dashboard-subtitle">
               Monitor each category and log your spending quickly.

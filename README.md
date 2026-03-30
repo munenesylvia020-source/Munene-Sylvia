@@ -23,7 +23,7 @@ Students often struggle to manage large disbursements, leading to overspending a
 
 ## Tech Stack
 
-* **Frontend:** React + Vite + JSX
+* **Frontend:** React + Vite
 * **State Management:** React Context
 * **Routing:** React Router
 * **Styling:** CSS + theme variables
@@ -55,7 +55,7 @@ src/
 
 ```bash
 git clone https://github.com/munenesylvia020-source/Munene-Sylvia.git
-cd premier_capital_web
+cd Munene-Sylvia
 npm install
 npm run dev
 

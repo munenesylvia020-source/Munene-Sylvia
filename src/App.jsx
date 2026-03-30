@@ -9,11 +9,13 @@ import Allocation from './pages/allocation';
 import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
 import Activity from './pages/Activity';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/landingpage" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/helb-amount" element={<HelbAmount />} />
@@ -23,7 +25,7 @@ function App() {
         <Route path="/activity" element={<Activity />} />
         <Route path="/budget-adjust" element={<BudgetAdjust />} />
         <Route path="/allocation" element={<Allocation />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/landingpage" replace />} />
       </Routes>
     </BrowserRouter>
   );
