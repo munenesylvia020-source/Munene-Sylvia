@@ -25,6 +25,10 @@ app.conf.beat_schedule = {
         'task': 'finance.tasks.verify_daily_disbursement_status', 
         'schedule': crontab(minute='*/5'),  # Run every 5 minutes
     },
+    'accrue-daily-interest': {
+        'task': 'investments.tasks.accrue_daily_interest',
+        'schedule': crontab(hour=20, minute=0),  # Run daily at 8:00 PM EAT
+    },
 }
 
 # Celery Configuration
@@ -35,5 +39,5 @@ app.conf.update(
     timezone='Africa/Nairobi',
     enable_utc=False,
     task_track_started=True,
-    task_time_limit=30 * 60,  # 30 minutes hard limit
+    task_time_limit=30 * 60, 
 )

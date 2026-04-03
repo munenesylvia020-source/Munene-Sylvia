@@ -136,6 +136,16 @@ export const auth = {
     
     return data;
   },
+
+  /**
+   * Update student M-Pesa phone number
+   */
+  updatePhone: async (phoneNumber) => {
+    return apiCall('/auth/students/update_phone/', {
+      method: 'POST',
+      body: JSON.stringify({ phone_number: phoneNumber }),
+    });
+  },
 };
 
 /**
@@ -328,29 +338,42 @@ export const finance = {
  * HELB API calls
  */
 export const helb = {
-  /**
-   * Get HELB disbursement status
-   */
+  getAccount: async () => {
+    return apiCall('/helb/accounts/my_account/', { method: 'GET' });
+  },
+  getProjections: async () => {
+    return apiCall('/helb/projections/', { method: 'GET' });
+  },
   getDisbursements: async () => {
     return apiCall('/helb/disbursements/', { method: 'GET' });
   },
-
-  /**
-   * Get specific disbursement
-   */
   getDisbursement: async (id) => {
     return apiCall(`/helb/disbursements/${id}/`, { method: 'GET' });
   },
-
-  /**
-   * Track HELB amount
-   */
   trackAmount: async (amount) => {
     return apiCall('/helb/track/', {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
   },
+};
+
+/**
+ * Investments API calls
+ */
+export const invest = {
+  getPortfolioGrowth: async () => {
+    return apiCall('/invest/positions/portfolio_growth/', { method: 'GET' });
+  },
+  getDailyAccruals: async () => {
+    return apiCall('/invest/positions/daily_accruals/', { method: 'GET' });
+  },
+  allocate: async (totalAmount, fundType = 'MMF', fundName = 'Default MMF') => {
+    return apiCall('/invest/positions/allocate/', {
+      method: 'POST',
+      body: JSON.stringify({ total_amount: totalAmount, fund_type: fundType, fund_name: fundName }),
+    });
+  }
 };
 
 export default apiCall;

@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/v1/auth/', include('accounts.urls')),
     path('api/v1/finance/', include('finance.urls')),
     path('api/v1/helb/', include('helb.urls')),
+    path('api/v1/invest/', include('investments.urls')),
     
     # DRF Authentication
     path('api-auth/', include('rest_framework.urls')),

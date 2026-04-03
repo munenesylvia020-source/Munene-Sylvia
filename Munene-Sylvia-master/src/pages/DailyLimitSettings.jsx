@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { finance } from '../services/api';
 import BottomNav from '../components/BottomNav';
-import '../styles/dailyLimit.css';
+import { ShieldAlert, TrendingUp, Clock, Phone, AlertCircle, CheckCircle } from 'lucide-react';
+import '../styles/settings.css';
 
 export default function DailyLimitSettings() {
   const navigate = useNavigate();
@@ -10,16 +11,7 @@ export default function DailyLimitSettings() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   
-  // Daily limit state
-  const [dailyLimit, setDailyLimit] = useState({
-    daily_amount: 0,
-    phone_number: '',
-    disbursement_time: '06:00',
-    is_active: false,
-    remaining_today: 0,
-  });
-
-  // Form state
+  const [dailyLimit, setDailyLimit] = useState({});
   const [formData, setFormData] = useState({
     daily_amount: '',
     phone_number: '',
@@ -30,19 +22,13 @@ export default function DailyLimitSettings() {
   const [history, setHistory] = useState([]);
   const [todayRemaining, setTodayRemaining] = useState(0);
 
-  // Load daily limit on mount
-  useEffect(() => {
-    loadDailyLimit();
-  }, []);
+  useEffect(() => { loadDailyLimit(); }, []);
 
   const loadDailyLimit = async () => {
     try {
       setLoading(true);
       const response = await finance.getDailyLimit();
-      
-      // Handle array response (from list endpoint)
       const limit = Array.isArray(response) ? response[0] : response;
-      
       if (limit) {
         setDailyLimit(limit);
         setFormData({
@@ -52,198 +38,132 @@ export default function DailyLimitSettings() {
           is_active: limit.is_active !== false,
         });
       }
-
-      // Load today's remaining
       const remainingResp = await finance.getTodayRemaining();
       setTodayRemaining(remainingResp.remaining || 0);
 
-      // Load disbursement history
       const historyResp = await finance.getDisbursementHistory();
       setHistory(Array.isArray(historyResp) ? historyResp : []);
-
-      setLoading(false);
     } catch (err) {
-      console.error('Error loading daily limit:', err);
       setError(err.message || 'Failed to load daily limit settings');
+    } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
+    setError(null); setSuccess(null);
+
+    if (!formData.daily_amount || formData.daily_amount <= 0) return setError('Daily amount must be > 0');
+    if (!formData.phone_number) return setError('Phone number is required');
+    if (formData.daily_amount > 50000) return setError('Limit cannot exceed KES 50,000');
 
     try {
-      // Validate inputs
-      if (!formData.daily_amount || formData.daily_amount <= 0) {
-        setError('Daily amount must be greater than 0');
-        return;
-      }
-
-      if (!formData.phone_number || formData.phone_number.trim() === '') {
-        setError('Phone number is required');
-        return;
-      }
-
-      if (formData.daily_amount > 50000) {
-        setError('Daily amount cannot exceed KES 50,000');
-        return;
-      }
-
-      // Submit form
       await finance.setDailyLimit({
         daily_amount: parseFloat(formData.daily_amount),
         phone_number: formData.phone_number.trim(),
         disbursement_time: formData.disbursement_time,
         is_active: formData.is_active,
       });
-
       setSuccess('Daily limit updated successfully!');
-      
-      // Reload data
-      setTimeout(() => {
-        loadDailyLimit();
-      }, 1000);
-
+      setTimeout(() => loadDailyLimit(), 1000);
     } catch (err) {
-      console.error('Error updating daily limit:', err);
       setError(err.message || 'Failed to update daily limit');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="daily-limit-container">
-        <div className="spinner">Loading...</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="settings-page"><div className="spinner"></div></div>;
 
   return (
-    <div className="daily-limit-container">
-      <div className="daily-limit-header">
-        <button className="back-btn" onClick={() => navigate('/dashboard')}>
-          ← Back
-        </button>
-        <h1>Daily Spending Limit</h1>
-      </div>
+    <div className="settings-page">
+      <header className="settings-header">
+        <h1>Spending Guard</h1>
+        <p className="subtitle">Restrict M-Pesa withdrawals and set daily allowances.</p>
+      </header>
 
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
-
-      {/* Today's Remaining Display */}
-      <div className="remaining-card">
-        <div className="remaining-label">Remaining Today</div>
-        <div className="remaining-amount">KES {todayRemaining.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-        {dailyLimit.daily_amount && (
-          <div className="remaining-meta">
-            Daily Limit: KES {dailyLimit.daily_amount.toLocaleString('en-KE')}
+      <div className="settings-content">
+        <div className="card-glass" style={{ marginBottom: 'var(--spacing-6)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <div style={{ background: 'var(--color-primary-light)', padding: '10px', borderRadius: '50%', color: 'var(--color-background)' }}>
+              <ShieldAlert size={20} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: '2px' }}>Today's Allowance</h3>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)' }}>
+                {dailyLimit.daily_amount ? `Max KES ${dailyLimit.daily_amount.toLocaleString()}/day` : 'No Limit Set'}
+              </p>
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* Settings Form */}
-      <form onSubmit={handleSubmit} className="daily-limit-form">
-        <h2>Configure Daily Limit</h2>
-
-        <div className="form-group">
-          <label htmlFor="daily_amount">Daily Amount (KES)</label>
-          <input
-            type="number"
-            id="daily_amount"
-            name="daily_amount"
-            value={formData.daily_amount}
-            onChange={handleInputChange}
-            placeholder="2000"
-            min="10"
-            max="50000"
-            step="100"
-            required
-          />
-          <small>Amount between KES 10 - 50,000</small>
+          <h2 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: 'var(--color-primary)', marginTop: '16px' }}>
+            KES {todayRemaining.toLocaleString('en-KE', { minimumFractionDigits: 2 })}
+          </h2>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="phone_number">Phone Number</label>
-          <input
-            type="tel"
-            id="phone_number"
-            name="phone_number"
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            placeholder="254712345678"
-            pattern="^254[0-9]{9}$"
-            required
-          />
-          <small>Format: 254XXXXXXXXX (M-Pesa will be sent to this number)</small>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="disbursement_time">Daily Disbursement Time</label>
-          <input
-            type="time"
-            id="disbursement_time"
-            name="disbursement_time"
-            value={formData.disbursement_time}
-            onChange={handleInputChange}
-            required
-          />
-          <small>Time (East African Time) when M-Pesa will be sent daily</small>
-        </div>
-
-        <div className="form-group checkbox">
-          <input
-            type="checkbox"
-            id="is_active"
-            name="is_active"
-            checked={formData.is_active}
-            onChange={handleInputChange}
-          />
-          <label htmlFor="is_active">Enable automatic daily disbursement</label>
-        </div>
-
-        <button type="submit" className="submit-btn">
-          Save Daily Limit Settings
-        </button>
-      </form>
-
-      {/* Disbursement History */}
-      {history.length > 0 && (
-        <div className="history-section">
-          <h2>Recent Disbursements</h2>
-          <div className="history-list">
-            {history.slice(0, 10).map((disbursement) => (
-              <div key={disbursement.id} className="history-item">
-                <div className="history-date">
-                  {new Date(disbursement.disbursement_date).toLocaleDateString('en-KE')}
-                </div>
-                <div className="history-amount">
-                  KES {disbursement.amount.toLocaleString('en-KE')}
-                </div>
-                <div className={`history-status status-${disbursement.status.toLowerCase()}`}>
-                  {disbursement.status}
-                </div>
-              </div>
-            ))}
+        <h3 className="section-title">Enforce Withdrawal Limit</h3>
+        <form onSubmit={handleSubmit} className="settings-section card-glass">
+          <p className="hint">Activate daily automatic allowances sent safely to your M-Pesa. Strict withdrawals block transfers exceeding your setup limit.</p>
+          
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Daily Amount (KES)</label>
+            <div className="input-group">
+              <TrendingUp size={18} color="var(--color-text-muted)" />
+              <input type="number" name="daily_amount" value={formData.daily_amount} onChange={handleInputChange} placeholder="e.g. 500" min="10" max="50000" className="settings-input" required />
+            </div>
           </div>
-        </div>
-      )}
 
-      {history.length === 0 && dailyLimit.daily_amount && (
-        <div className="no-history">
-          <p>No disbursements yet. Daily M-Pesa sends will appear here.</p>
-        </div>
-      )}
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Receiving M-Pesa Number</label>
+            <div className="input-group">
+              <Phone size={18} color="var(--color-text-muted)" />
+              <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleInputChange} placeholder="2547XXXXXXXX" pattern="^254[0-9]{9}$" className="settings-input" required />
+            </div>
+          </div>
 
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Daily Send Time</label>
+            <div className="input-group">
+              <Clock size={18} color="var(--color-text-muted)" />
+              <input type="time" name="disbursement_time" value={formData.disbursement_time} onChange={handleInputChange} className="settings-input" required />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleInputChange} style={{ width: '18px', height: '18px', cursor: 'pointer' }}/>
+            <label style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)' }}>Lock Wallet & Auto-Disburse Daily</label>
+          </div>
+
+          {error && <div style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><AlertCircle size={14}/> {error}</div>}
+          {success && <div style={{ color: 'var(--color-success)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><CheckCircle size={14}/> {success}</div>}
+
+          <button type="submit" className="primary-btn" style={{ width: '100%', marginTop: '16px' }}>Enforce Limit</button>
+        </form>
+
+        <h3 className="section-title">Recent Allowances</h3>
+        <div className="card-glass">
+            {history.length > 0 ? (
+                history.slice(0, 5).map((disb) => (
+                    <div key={disb.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border)', padding: '12px 0' }}>
+                        <div>
+                            <p style={{ fontWeight: 500, fontSize: 'var(--text-sm)' }}>Automatic Limit Send</p>
+                            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>{new Date(disb.disbursement_date).toLocaleDateString()}</p>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <p style={{ fontWeight: 600, color: 'var(--color-error)' }}>-KES {disb.amount.toLocaleString()}</p>
+                            <p style={{ fontSize: '0.65rem', color: disb.status === 'COMPLETED' ? 'var(--color-success)' : 'var(--color-warning)' }}>{disb.status}</p>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-sm)', textAlign: 'center' }}>No daily allowances have triggered yet.</p>
+            )}
+        </div>
+
+      </div>
       <BottomNav />
     </div>
   );

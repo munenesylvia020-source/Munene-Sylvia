@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 import json
+import time
 import logging
 from decimal import Decimal
 
@@ -205,6 +206,25 @@ class InitiateC2BView(APIView):
             # Initialize Daraja client
             client = DarajaClient()
             
+            # --- LOCAL DEVELOPMENT MOCK MODE ---
+            if not client.consumer_key:
+                logger.warning("Entering MOCK MODE (Deposit). Auto-completing.")
+                # Create Mock Transaction
+                from .models import Transaction
+                Transaction.create_deposit(
+                    student=request.user,
+                    amount=amount,
+                    mpesa_ref=f"MOCK_C2B_{int(amount)}_{int(time.time()*1000)}"
+                )
+                return Response({
+                    'status': 'success',
+                    'message': 'MOCK MODE: STK Push completed instantly!',
+                    'response': {'ResponseCode': '0'},
+                    'phone_number': validated_phone,
+                    'amount': str(amount)
+                })
+            # -----------------------------------
+            
             # Simulate C2B transaction for sandbox
             try:
                 response = client.simulate_c2b_transaction(
@@ -294,6 +314,30 @@ class InitiateB2CView(APIView):
             client = DarajaClient()
             
             try:
+                # --- LOCAL DEVELOPMENT MOCK MODE ---
+                if not client.consumer_key:
+                    logger.warning("Entering MOCK MODE for B2C Withdrawal. Auto-completing.")
+                    student_wallet.balance -= amount
+                    student_wallet.save()
+                    
+                    b2c_trans = B2CTransaction.objects.create(
+                        student=request.user, phone_number=validated_phone, amount=amount,
+                        purpose=purpose, originator_conversation_id=f"MOCK_B2C_{int(amount)}_{int(time.time()*1000)}",
+                        response_code="0", response_description="Mock Success", status='SUCCESS'
+                    )
+                    
+                    Transaction.objects.create(
+                        student=request.user, wallet=student_wallet, transaction_type='WITHDRAWAL',
+                        amount=amount, status='COMPLETED', description=f"MOCK B2C Withdrawal to {validated_phone}"
+                    )
+                    
+                    return Response({
+                        'status': 'success', 'message': 'MOCK MODE: Withdrawal completed instantly!',
+                        'b2c_id': b2c_trans.id, 'phone_number': validated_phone, 'amount': str(amount),
+                        'remaining_balance': str(student_wallet.balance)
+                    }, status=status.HTTP_201_CREATED)
+                # -----------------------------------
+
                 # Initiate B2C payment
                 response = client.initiate_b2c_payment(
                     phone_number=validated_phone,

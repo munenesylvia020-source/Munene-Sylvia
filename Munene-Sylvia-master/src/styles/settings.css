@@ -1,0 +1,123 @@
+.settings-page {
+  padding: var(--spacing-4);
+  padding-bottom: 120px;
+  animation: fadeIn var(--transition-normal);
+}
+
+.settings-header h1 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--spacing-1);
+}
+
+.settings-header .subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-6);
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.profile-avatar {
+  background: rgba(99, 102, 241, 0.1);
+  padding: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-info h2 {
+  font-size: var(--text-xl);
+  margin-bottom: 2px;
+}
+
+.profile-info p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.profile-info .institution {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.settings-section .hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-4);
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--spacing-3);
+  transition: all var(--transition-fast);
+}
+
+.input-group:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.settings-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: var(--spacing-3);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.settings-list-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: var(--spacing-2) 0;
+  text-align: left;
+  cursor: pointer;
+  gap: var(--spacing-4);
+}
+
+.item-text {
+  flex: 1;
+}
+
+.item-text h4 {
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.item-text p {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-error);
+  font-weight: 600;
+  margin-top: var(--spacing-8);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}

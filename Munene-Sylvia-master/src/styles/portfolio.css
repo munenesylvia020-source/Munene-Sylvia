@@ -1,0 +1,208 @@
+.portfolio-page {
+  padding: var(--spacing-6);
+  padding-bottom: 120px;
+  animation: fadeIn var(--transition-normal);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.portfolio-header h1 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--spacing-1);
+}
+
+.portfolio-header .subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-6);
+}
+
+.card-glass {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-6);
+  transition: all var(--transition-normal);
+}
+
+.card-glass:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+}
+
+.portfolio-hero {
+  background: var(--color-grad-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200px; height: 200px;
+  background: var(--color-primary);
+  filter: blur(100px);
+  opacity: 0.15;
+  border-radius: 50%;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-3);
+}
+
+.hero-label {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.hero-badge {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.hero-balance {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--spacing-6);
+  font-weight: 700;
+  text-shadow: var(--text-shadow-hero);
+}
+
+.hero-stats {
+  display: flex;
+  background: var(--color-backdrop-overlay);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-xl);
+  align-items: center;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--color-border);
+  margin: 0 var(--spacing-3);
+}
+
+.stat-value {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.text-success { color: var(--color-success) !important; }
+.text-accent { color: var(--color-accent) !important; }
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.section-title {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text-primary);
+}
+
+.positions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-6);
+}
+
+.position-card {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4);
+  margin-bottom: 0;
+}
+
+.pos-icon {
+  background: rgba(99, 102, 241, 0.1);
+  padding: 10px;
+  border-radius: 12px;
+  margin-right: var(--spacing-4);
+}
+
+.pos-details h4 {
+  font-size: var(--text-base);
+  margin: 0;
+}
+
+.pos-details p {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.pos-value {
+  margin-left: auto;
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.allocation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.banner-content h4 {
+  color: var(--color-accent);
+  margin-bottom: 4px;
+}
+
+.banner-content p {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.allocate-manual-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+}
+
+.portfolio-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: var(--color-text-muted);
+}
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+  margin-bottom: var(--spacing-4);
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }

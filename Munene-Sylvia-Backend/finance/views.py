@@ -132,6 +132,29 @@ class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
             from .mpesa_utils import DarajaClient
             client = DarajaClient()
             
+            # --- LOCAL DEVELOPMENT MOCK MODE ---
+            # If no Daraja keys exist, bypass Safaricom and instantly complete the transaction
+            if not client.consumer_key:
+                logger.warning("Entering MOCK MODE: No Daraja keys found. Auto-completing deposit.")
+                trans.status = 'COMPLETED'
+                trans.save()
+                
+                # Directly credit the wallet
+                Transaction.create_deposit(
+                    student=request.user,
+                    amount=amount,
+                    mpesa_ref=f"MOCK_STK_{trans.id}"
+                )
+                
+                return Response({
+                    'message': 'MOCK MODE: STK Push intercepted and auto-completed successfully!',
+                    'transaction_id': trans.id,
+                    'amount': amount,
+                    'phone_number': phone_number,
+                    'daraja_response': {'ResponseCode': '0', 'CheckoutRequestID': f'mock_{trans.id}'}
+                }, status=status.HTTP_201_CREATED)
+            # -----------------------------------
+
             # Initiate real STK Push
             result = client.initiate_stk_push(
                 phone_number=phone_number,

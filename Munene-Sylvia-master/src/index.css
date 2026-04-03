@@ -1,9 +1,10 @@
-/* Import Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+/* Import Modern Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import './App.css';
 @import './styles/auth.css';
 @import './styles/login.css';
 @import './styles/signup.css';
+@import './styles/settings.css';
 @import './styles/HelbAmount.css';
 @import './styles/budgetConfirm.css';
 @import './styles/budgetAdjust.css';
@@ -12,114 +13,81 @@
 @import './styles/addExpense.css';
 @import './styles/activity.css';
 
-/* DESIGN SYSTEM */
+/* PREMIUM DARK MODE DESIGN SYSTEM */
 
 :root {
-
   /* =====================
      BRAND COLORS
   ===================== */
-  --color-primary: #6366f1;        /* Indigo */
-  --color-primary-light: #818cf8;  /* Light Indigo */
-  --color-primary-dark: #4f46e5;   /* Dark Indigo */
-  --color-accent: #f59e0b;         /* Amber */
-  --color-accent-light: #fbbf24;   /* Light Amber */
-  --color-secondary: #ec4899;      /* Pink */
-  --color-secondary-light: #f472b6; /* Light Pink */
-  --color-background: #fafafa;     /* Very light gray */
+  --color-primary: #818cf8;        /* Vibrant Indigo */
+  --color-primary-light: #a5b4fc;
+  --color-primary-dark: #6366f1;
+  
+  --color-accent: #38bdf8;         /* Light Sky Blue */
+  --color-secondary: #f472b6;      /* Pink */
+
+  --color-background: #09090b;     /* Deep True Dark (Zinc 950) */
+  --color-surface: #18181b;        /* Card Background (Zinc 900) */
+  --color-surface-hover: #27272a;  /* Hover Card Background */
+  --color-surface-glass: rgba(24, 24, 27, 0.6); /* Glassmorphism Panel */
+
+  --color-border: #27272a;         /* Subtle border */
+  --color-border-hover: #3f3f46;
 
   /* Gradient (page backgrounds & primary buttons) */
-  --color-grad-start: #667eea;
-  --color-grad-end:   #764ba2;
-  --color-grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --color-grad-accent: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  --color-grad-secondary: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  --color-grad-primary: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  --color-grad-accent: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+  --color-grad-secondary: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  --color-grad-surface: linear-gradient(180deg, rgba(24, 24, 27, 0.4) 0%, rgba(24, 24, 27, 0.8) 100%);
 
-  /* Single token for all full-page backgrounds — change here to retheme the whole app */
-  --page-bg: #fafafa;
+  --page-bg: var(--color-background);
   --button-bg: var(--color-primary);
 
-  /* Subtle grey gradient for inner sections */
-  --color-section-bg: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-
-  /* Button background — shares the brand gradient */
+  /* Button baseline */
   --btn-bg: var(--color-primary);
   --btn-bg-hover: var(--color-primary-dark);
-  --btn-secondary: #6b7280;
-  --btn-secondary-hover: #4b5563;
+  --btn-secondary: #27272a;
+  --btn-secondary-hover: #3f3f46;
 
   /* =====================
      STATUS COLORS
   ===================== */
-  --color-success: #10b981;        /* Emerald */
-  --color-success-light: #34d399;
-  --color-warning: #f59e0b;        /* Amber */
-  --color-warning-light: #fbbf24;
-  --color-error: #ef4444;          /* Red */
-  --color-error-light: #f87171;
-  --color-info: #3b82f6;           /* Blue */
-  --color-info-light: #60a5fa;
+  --color-success: #10b981;        
+  --color-success-bg: rgba(16, 185, 129, 0.1);
+  --color-warning: #f59e0b;        
+  --color-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-error: #ef4444;          
+  --color-error-bg: rgba(239, 68, 68, 0.1);
+  --color-info: #3b82f6;           
 
-  /* =====================
-     NEUTRALS
-  ===================== */
-  --color-white: #ffffff;
-  --color-black: #000000;
+  --color-glass-icon: rgba(255, 255, 255, 0.05);
+  --color-backdrop-overlay: rgba(0, 0, 0, 0.2);
+  --text-shadow-hero: 0 2px 10px rgba(0,0,0,0.5);
 
   /* =====================
      TEXT SHADES
   ===================== */
-  --color-text-primary: #111827;     /* Very dark gray */
-  --color-text-secondary: #374151;   /* Dark gray */
-  --color-text-heading: #1f2937;     /* Dark slate */
-  --color-text-label: #4b5563;       /* Medium gray */
-  --color-text-body: #6b7280;        /* Gray */
-  --color-text-hint: #9ca3af;        /* Light gray */
-  --color-text-muted: #d1d5db;       /* Very light gray */
-  --color-text-subdued: #6b7280;     /* Gray */
-  --color-text-placeholder: #9ca3af; /* Light gray */
-
-  /* =====================
-     GREY SCALE
-  ===================== */
-  --color-grey-50:  #f9fafb;
-  --color-grey-100: #f3f4f6;
-  --color-grey-200: #e5e7eb;
-  --color-grey-300: #d1d5db;
-  --color-grey-400: #9ca3af;
-  --color-grey-500: #6b7280;
-  --color-grey-600: #4b5563;
-  --color-grey-700: #374151;
-  --color-grey-800: #1f2937;
-  --color-grey-900: #111827;
-  --color-light-grey: #f3f4f6;
-  --color-border-grey: #e5e7eb;
+  --color-text-primary: #f4f4f5;     /* Zinc 100 */
+  --color-text-secondary: #a1a1aa;   /* Zinc 400 */
+  --color-text-heading: #ffffff;     /* White */
+  --color-text-muted: #71717a;       /* Zinc 500 */
 
   /* =====================
      BUDGET CATEGORY COLORS
   ===================== */
-  --color-cat-rent: #3b82f6;      /* Blue */
-  --color-cat-food: #10b981;     /* Emerald */
-  --color-cat-tuition: #f59e0b;  /* Amber */
-  --color-cat-savings: #8b5cf6;  /* Violet */
-  --color-cat-transport: #ef4444; /* Red */
-  --color-cat-entertainment: #ec4899; /* Pink */
-  --color-cat-utilities: #6b7280; /* Gray */
-
-  /* =====================
-     RGB CHANNELS (for rgba() usage)
-  ===================== */
-  --color-primary-rgb: 99, 102, 241;
-  --color-grad-start-rgb: 102, 126, 234;
-  --color-error-rgb: 239, 68, 68;
-  --color-success-rgb: 16, 185, 129;
-  --color-warning-rgb: 245, 158, 11;
+  --color-cat-rent: #3b82f6;      
+  --color-cat-food: #10b981;     
+  --color-cat-tuition: #f59e0b;  
+  --color-cat-savings: #8b5cf6;  
+  --color-cat-transport: #ef4444; 
+  --color-cat-entertainment: #ec4899; 
+  --color-cat-utilities: #71717a; 
 
   /* =====================
      TYPOGRAPHY
   ===================== */
-  --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  --font-heading: 'Outfit', sans-serif;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Font sizes */
   --text-xs: 0.75rem;
@@ -128,17 +96,8 @@
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-
-  /* Font weights */
-  --font-light: 300;
-  --font-normal: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  --font-bold: 700;
-  --font-extrabold: 800;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
 
   /* =====================
      SPACING
@@ -150,109 +109,202 @@
   --spacing-5: 1.25rem;
   --spacing-6: 1.5rem;
   --spacing-8: 2rem;
-  --spacing-10: 2.5rem;
-  --spacing-12: 3rem;
-  --spacing-16: 4rem;
-  --spacing-20: 5rem;
-  --spacing-24: 6rem;
 
   /* =====================
-     BORDER RADIUS
+     BORDER & RADIUS
   ===================== */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-3xl: 1.5rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
   --radius-full: 9999px;
 
   /* =====================
-     SHADOWS
+     SHADOWS (Tailored for dark mode)
   ===================== */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-glow-primary: 0 0 16px rgba(99, 102, 241, 0.4);
 
-  /* Card shadows */
   --shadow-card: var(--shadow-md);
   --shadow-card-hover: var(--shadow-lg);
-  --shadow-elevated: var(--shadow-xl);
 
   /* =====================
      ANIMATIONS
   ===================== */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 250ms ease-in-out;
-  --transition-slow: 350ms ease-in-out;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-  /* =====================
-     Z-INDEX
-  ===================== */
-  --z-dropdown: 1000;
-  --z-sticky: 1020;
-  --z-fixed: 1030;
-  --z-modal-backdrop: 1040;
-  --z-modal: 1050;
-  --z-popover: 1060;
-  --z-tooltip: 1070;
+/* PREMIUM LIGHT MODE OVERRIDES */
+:root.light-mode {
+  --color-background: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f4f5;
+  --color-surface-glass: rgba(255, 255, 255, 0.7);
+
+  --color-glass-icon: rgba(0, 0, 0, 0.05);
+  --color-backdrop-overlay: rgba(0, 0, 0, 0.05);
+  --text-shadow-hero: none;
+
+  --color-border: #e4e4e7;
+  --color-border-hover: #d4d4d8;
+
+  --color-text-primary: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-heading: #09090b;
+  --color-text-muted: #71717a;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  --btn-secondary: #f4f4f5;
+  --btn-secondary-hover: #e4e4e7;
+
+  --color-grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 /* RESET */
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* GLOBAL BODY */
-
-body{
+body {
   font-family: var(--font-family);
-  background: var(--color-background);
+  background-color: var(--color-background);
   color: var(--color-text-primary);
-  min-height:100vh;
-  line-height:1.5;
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  color: var(--color-text-heading);
 }
 
 /* LINKS */
-
-a{
-  text-decoration:none;
+a {
+  text-decoration: none;
   color: var(--color-primary);
-  font-weight:500;
+  font-weight: 500;
+  transition: color var(--transition-fast);
 }
 
-a:hover{
-  color: var(--color-secondary);
+a:hover {
+  color: var(--color-primary-light);
 }
 
 /* BUTTON BASELINE */
-
-button{
-  font-family: var(--font-family);
-  border:none;
-  cursor:pointer;
+button {
+  font-family: var(--font-heading);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-/* INPUT BASELINE */
-
-input{
+input {
   font-family: var(--font-family);
 }
 
-.primary-btn{
-  background: var(--color-primary);
-  color: var(--color-white);
+/* Utility Classes */
+.primary-btn {
+  background: var(--color-grad-primary);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
 }
-h1{
-  color: var(--color-secondary);
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
-body{
-  background: var(--color-background);
+
+.primary-btn:active {
+  transform: translateY(0);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+}
+
+/* =====================
+   GLOBAL MICRO-ANIMATIONS 
+===================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulseSoft {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pulse-soft {
+  animation: pulseSoft 3s ease-in-out infinite;
+}
+
+/* Hard-override card-glass to systematically slide-up smoothly whenever rendered! */
+.card-glass {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-glass);
+  color: var(--color-text-primary);
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.card-glass:hover {
+  border-color: var(--color-border-hover);
 }
 

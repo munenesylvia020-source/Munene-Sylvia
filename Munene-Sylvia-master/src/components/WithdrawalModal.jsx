@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import '../styles/withdrawal.css';
+import { ArrowUpFromLine, Phone, X, AlertCircle, CheckCircle, Briefcase } from 'lucide-react';
+import { finance } from '../services/api';
 
-const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance, studentInfo }) => {
+const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [purpose, setPurpose] = useState('BusinessPayment');
@@ -16,60 +17,25 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance, studentInf
     setLoading(true);
 
     try {
-      // Validate balance
       const amountNum = parseFloat(amount);
       if (amountNum > walletBalance) {
-        setError(`Insufficient balance. Available: KES ${walletBalance}`);
+        setError(`Insufficient funds. You only have KES ${walletBalance?.toLocaleString()}`);
         setLoading(false);
         return;
       }
 
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Not authenticated. Please login first.');
-        setLoading(false);
-        return;
-      }
+      const data = await finance.initiateWithdrawal(phoneNumber, amountNum, purpose);
 
-      const response = await fetch('http://localhost:8000/api/v1/finance/b2c/initiate/', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone_number: phoneNumber,
-          amount: amountNum,
-          purpose: purpose,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Failed to initiate withdrawal');
-        setLoading(false);
-        return;
-      }
-
-      setSuccess('Withdrawal initiated! The funds will be sent to your M-Pesa account.');
-      setAmount('');
-      setPhoneNumber('');
-      
-      // Call parent callback
-      if (onSuccess) {
-        onSuccess(data);
-      }
-
-      // Close modal after 2 seconds
+      setSuccess('Withdrawal initiated! Funds will be disbursed to M-Pesa.');
+      if (onSuccess) onSuccess(data);
       setTimeout(() => {
+        setAmount('');
+        setError('');
         onClose();
       }, 2000);
 
     } catch (err) {
-      setError('Network error. Please try again.');
-      console.error('Withdrawal error:', err);
+      setError(err.message || 'Network error. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -78,77 +44,63 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance, studentInf
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Withdraw to M-Pesa</h2>
-          <button className="modal-close" onClick={onClose}>&times;</button>
+    <div className="modal-overlay" onClick={onClose} style={{
+      position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+      background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+    }}>
+      <div className="card-glass" onClick={e => e.stopPropagation()} style={{
+        width: '90%', maxWidth: '400px', padding: 'var(--spacing-6)', position: 'relative'
+      }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', color: 'var(--color-text-muted)' }}>
+          <X size={24} />
+        </button>
+
+        <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <ArrowUpFromLine color="var(--color-error)" /> Withdraw Funds
+        </h2>
+        <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', marginBottom: '16px' }}>Move funds from your wallet to any M-Pesa number.</p>
+
+        <div style={{ background: 'var(--color-backdrop-overlay)', padding: '12px', borderRadius: 'var(--radius-lg)', marginBottom: '24px' }}>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Available Balance</span>
+            <p style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--color-primary)' }}>KES {walletBalance?.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="withdrawal-form">
-          <div className="balance-info">
-            <p>Available Balance: <strong>KES {walletBalance?.toFixed(2)}</strong></p>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Withdrawal Amount</label>
+            <div className="input-group">
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 600, marginLeft: '8px' }}>KES</span>
+              <input type="number" className="settings-input" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" min="1" max={walletBalance || 500000} required disabled={loading} />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="amount">Withdrawal Amount (KES)</label>
-            <input
-              type="number"
-              id="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-              min="1"
-              max={Math.min(walletBalance, 500000)}
-              step="100"
-              required
-              disabled={loading}
-            />
-            <small>Available: KES {walletBalance?.toFixed(2)}</small>
+          <div>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Destination Phone</label>
+            <div className="input-group">
+              <Phone size={18} color="var(--color-text-muted)" className="input-icon" />
+              <input type="text" className="settings-input" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="2547XXXXXXXX" required disabled={loading} />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="phone">Recipient Phone Number</label>
-            <input
-              type="text"
-              id="phone"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="254712345678"
-              required
-              disabled={loading}
-            />
-            <small>Format: 254XXXXXXXXX (Kenyan number)</small>
+          <div>
+            <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Purpose</label>
+            <div className="input-group">
+              <Briefcase size={18} color="var(--color-text-muted)" className="input-icon" />
+              <select className="settings-input" value={purpose} onChange={(e) => setPurpose(e.target.value)} disabled={loading} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-primary)' }}>
+                <option value="BusinessPayment">Business Payment</option>
+                <option value="SalaryPayment">Salary Payment</option>
+                <option value="PromotionalPayment">Promotional / Payout</option>
+              </select>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="purpose">Purpose</label>
-            <select
-              id="purpose"
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              disabled={loading}
-            >
-              <option value="BusinessPayment">Business Payment</option>
-              <option value="SalaryPayment">Salary Payment</option>
-              <option value="PromotionalPayment">Promotional Payment</option>
-            </select>
-          </div>
+          {error && <div style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><AlertCircle size={14}/> {error}</div>}
+          {success && <div style={{ color: 'var(--color-success)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><CheckCircle size={14}/> {success}</div>}
 
-          {error && <div className="alert alert-error">{error}</div>}
-          {success && <div className="alert alert-success">{success}</div>}
-
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={loading || !amount || !phoneNumber || parseFloat(amount) > walletBalance}
-          >
-            {loading ? 'Processing...' : 'Withdraw via M-Pesa'}
+          <button type="submit" className="primary-btn" disabled={loading || !amount || !phoneNumber || parseFloat(amount) > walletBalance} style={{ width: '100%', marginTop: '8px' }}>
+            {loading ? 'Processing...' : 'Complete Withdrawal'}
           </button>
-
-          <p className="info-text">
-            The funds will be transferred to the recipient's M-Pesa account within 1-3 minutes.
-          </p>
         </form>
       </div>
     </div>

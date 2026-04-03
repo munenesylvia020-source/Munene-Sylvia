@@ -1,4 +1,5 @@
 import { formatCurrency } from "../utils/budgetStore";
+import { Home, Utensils, GraduationCap, PiggyBank, Car, Film, Zap, PieChart } from "lucide-react";
 
 export default function CategoryCard({ title, amountLeft, total, spent = 0 }) {
   const safeTotal = Number(total) || 0;
@@ -6,56 +7,44 @@ export default function CategoryCard({ title, amountLeft, total, spent = 0 }) {
   const safeSpent = Number(spent) || 0;
   const percent = safeTotal > 0 ? Math.max(0, Math.min(100, (safeAmountLeft / safeTotal) * 100)) : 0;
 
-  // Determine status based on spending
-  const getStatus = () => {
-    if (safeSpent === 0) return 'unused';
-    if (percent > 50) return 'good';
-    if (percent > 20) return 'warning';
-    return 'danger';
-  };
-
-  const status = getStatus();
+  let colorVar = "var(--color-primary)";
+  if (percent < 20) colorVar = "var(--color-error)";
+  else if (percent < 50) colorVar = "var(--color-warning)";
 
   return (
-    <article className={`category-card category-card--${status}`}>
-      <div className="category-header">
-        <div className="category-icon">
+    <article className="card-glass" style={{ padding: 'var(--spacing-4)', marginBottom: '0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+        <div style={{ background: 'var(--color-glass-icon)', padding: '10px', borderRadius: '12px' }}>
           {getCategoryIcon(title)}
         </div>
-        <div className="category-info">
-          <h3 className="category-title">{title}</h3>
-          <span className="category-left">KES {formatCurrency(safeAmountLeft)}</span>
+        <div>
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--color-text-secondary)' }}>{title}</h3>
+          <span style={{ fontSize: 'var(--text-base)', fontWeight: 600 }}>KES {formatCurrency(safeAmountLeft)}</span>
         </div>
       </div>
 
-      <div className="category-progress">
-        <div className="category-progress-track">
-          <div
-            className="category-progress-fill"
-            style={{ width: `${percent}%` }}
-          />
-        </div>
-        <span className="category-percent">{Math.round(percent)}%</span>
+      <div style={{ height: '8px', borderRadius: '4px', background: 'var(--color-background)', overflow: 'hidden', marginBottom: '8px' }}>
+        <div style={{ height: '100%', width: `${percent}%`, background: colorVar, borderRadius: '4px', transition: 'width 0.5s ease' }} />
       </div>
 
-      <div className="category-details">
-        <span className="category-spent">Spent: KES {formatCurrency(safeSpent)}</span>
-        <span className="category-total">Total: KES {formatCurrency(safeTotal)}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--color-text-muted)' }}>
+        <span>Spent: KES {formatCurrency(safeSpent)}</span>
+        <span>{Math.round(percent)}% left</span>
       </div>
     </article>
   );
 }
 
 function getCategoryIcon(title) {
-  const icons = {
-    'Rent': '🏠',
-    'Food': '🍽️',
-    'Tuition': '🎓',
-    'Savings': '💰',
-    'Transport': '🚗',
-    'Entertainment': '🎬',
-    'Utilities': '⚡'
-  };
-
-  return icons[title] || '📊';
+  const props = { size: 18, color: "var(--color-text-primary)" };
+  switch(title) {
+    case 'Rent': return <Home {...props} />;
+    case 'Food': return <Utensils {...props} />;
+    case 'Tuition': return <GraduationCap {...props} />;
+    case 'Savings': return <PiggyBank {...props} />;
+    case 'Transport': return <Car {...props} />;
+    case 'Entertainment': return <Film {...props} />;
+    case 'Utilities': return <Zap {...props} />;
+    default: return <PieChart {...props} />;
+  }
 }

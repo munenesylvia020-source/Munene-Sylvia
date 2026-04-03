@@ -11,6 +11,8 @@ from .serializers import (
     HELBAccountSerializer, DisbursementSerializer, DisbursementScheduleSerializer,
     DisbursementProjectionSerializer, ProjectionsResponseSerializer
 )
+from investments.models import AllocationPlan, InvestmentPosition
+from django.db import transaction
 
 
 class HELBAccountViewSet(viewsets.ReadOnlyModelViewSet):
@@ -223,29 +225,43 @@ class DisbursementTrackView(APIView):
         except Exception:
             return Response({'error': 'amount must be a positive number'}, status=status.HTTP_400_BAD_REQUEST)
 
-        helb_account, _ = HELBAccount.objects.get_or_create(student=request.user, defaults={
-            'total_approved_amount': amount * 4,
-            'remaining_balance': amount * 4,
-            'helb_reference_number': f'HELB-{request.user.id}-{timezone.now().strftime("%Y%m%d%H%M%S")}'
-        })
+        with transaction.atomic():
+            helb_account, _ = HELBAccount.objects.get_or_create(student=request.user, defaults={
+                'total_approved_amount': amount * 4,
+                'remaining_balance': amount * 4,
+                'helb_reference_number': f'HELB-{request.user.id}-{timezone.now().strftime("%Y%m%d%H%M%S")}'
+            })
 
-        disbursement = Disbursement.objects.create(
-            helb_account=helb_account,
-            student=request.user,
-            amount=amount,
-            expected_date=timezone.now().date(),
-            status='COMPLETED',
-            disbursal_date=timezone.now().date(),
-            received_date=timezone.now().date(),
-            notes='Tracked HELB disbursement amount from frontend'
-        )
+            disbursement = Disbursement.objects.create(
+                helb_account=helb_account,
+                student=request.user,
+                amount=amount,
+                expected_date=timezone.now().date(),
+                status='COMPLETED',
+                disbursal_date=timezone.now().date(),
+                received_date=timezone.now().date(),
+                notes='Tracked HELB disbursement amount from frontend'
+            )
 
-        helb_account.total_disbursed += amount
-        helb_account.remaining_balance = max(Decimal('0.00'), helb_account.total_approved_amount - helb_account.total_disbursed)
-        helb_account.save()
+            # Immediately trigger the 50/30/20 Budgeting Rule
+            allocation = AllocationPlan.create_allocation(request.user, amount)
+
+            # Hard-route the 20% into an Investment MMF Position instantly
+            InvestmentPosition.objects.create(
+                student=request.user,
+                allocation=allocation,
+                fund_type='MMF',
+                fund_name='Safaricom Wealth MMF (Auto-Invest)',
+                principal_amount=allocation.investment_amount,
+                current_value=allocation.investment_amount
+            )
+
+            helb_account.total_disbursed += amount
+            helb_account.remaining_balance = max(Decimal('0.00'), helb_account.total_approved_amount - helb_account.total_disbursed)
+            helb_account.save()
 
         return Response({
-            'message': 'HELB amount tracked successfully',
+            'message': 'HELB amount tracked successfully! 50/30/20 Budget Active.',
             'disbursement_id': disbursement.id,
             'total_disbursed': str(helb_account.total_disbursed),
             'remaining_balance': str(helb_account.remaining_balance)

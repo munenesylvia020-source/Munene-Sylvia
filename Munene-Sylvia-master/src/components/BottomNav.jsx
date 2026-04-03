@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiHome, FiPlusCircle, FiActivity, FiSettings, FiLogOut } from 'react-icons/fi';
+import { Home, PlusCircle, Activity, PieChart, Settings, LogOut } from 'lucide-react';
 import '../styles/bottomNav.css';
 
 export default function BottomNav() {
@@ -9,29 +9,33 @@ export default function BottomNav() {
   const isActive = (path) => location.pathname === path ? 'active' : '';
 
   const navItems = [
-    { icon: FiHome, label: 'Dashboard', path: '/dashboard', className: 'nav-home' },
-    { icon: FiPlusCircle, label: 'Add Expense', path: '/add', className: 'nav-add' },
-    { icon: FiActivity, label: 'Activity', path: '/activity', className: 'nav-activity' },
-    { icon: FiSettings, label: 'Settings', path: '/daily-limit', className: 'nav-settings' },
-    { icon: FiLogOut, label: 'Logout', path: '/logout', className: 'nav-logout' },
+    { icon: Home, label: 'Home', path: '/dashboard' },
+    { icon: PieChart, label: 'Portfolio', path: '/portfolio' },
+    { icon: PlusCircle, label: 'Add', path: '/add', isPrimary: true },
+    { icon: Activity, label: 'Activity', path: '/activity' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
-    <nav className="bottom-nav">
-      <div className="bottom-nav-container">
-        {navItems.map((item) => (
-          <button
-            key={item.path}
-            className={`nav-item ${isActive(item.path)} ${item.className}`}
-            onClick={() => navigate(item.path)}
-            title={item.label}
-            aria-label={item.label}
-          >
-            <item.icon className="nav-icon" />
-            <span className="nav-label">{item.label}</span>
-          </button>
-        ))}
-      </div>
-    </nav>
+    <>
+      <div className="bottom-nav-spacer"></div>
+      <nav className="bottom-nav">
+        <div className="bottom-nav-container">
+          {navItems.map((item) => (
+            <button
+              key={item.path}
+              className={`nav-item ${isActive(item.path)} ${item.isPrimary ? 'nav-primary' : ''}`}
+              onClick={() => navigate(item.path)}
+              title={item.label}
+              aria-label={item.label}
+            >
+              <item.icon className="nav-icon" size={item.isPrimary ? 28 : 24} />
+              <span className="nav-label">{item.label}</span>
+              {isActive(item.path) && !item.isPrimary && <span className="nav-indicator"></span>}
+            </button>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 }
