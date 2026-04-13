@@ -4,6 +4,7 @@ import CategoryCard from "../components/CategoryCard";
 import BottomNav from "../components/BottomNav";
 import DepositModal from "../components/DepositModal";
 import WithdrawalModal from "../components/WithdrawalModal";
+import AIChatWidget from "../components/AIChatWidget";
 import { useNavigate } from "react-router-dom";
 import { getDashboardSummary } from "../utils/budgetStore";
 import { finance } from "../services/api";
@@ -267,6 +268,7 @@ export default function Dashboard() {
       <DepositModal isOpen={depositModalOpen} onClose={() => setDepositModalOpen(false)} onSuccess={handleDepositSuccess} />
       <WithdrawalModal isOpen={withdrawalModalOpen} onClose={() => setWithdrawalModalOpen(false)} onSuccess={handleWithdrawalSuccess} walletBalance={realBalance} studentInfo={{}} />
 
+      <AIChatWidget mpesaTransactions={mpesaTransactions} b2cTransactions={b2cTransactions} />
       <BottomNav />
     </div>
   );

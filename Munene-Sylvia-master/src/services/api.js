@@ -226,13 +226,14 @@ export const finance = {
   /**
    * Initiate C2B deposit (send money to wallet)
    */
-  initiateDeposit: async (phoneNumber, amount, reference = 'deposit') => {
+  initiateDeposit: async (phoneNumber, amount, reference = 'deposit', isMock = false) => {
     return apiCall('/finance/c2b/initiate/', {
       method: 'POST',
       body: JSON.stringify({
         phone_number: phoneNumber,
         amount: amount,
         reference: reference,
+        is_mock: isMock,
       }),
     });
   },
@@ -240,13 +241,14 @@ export const finance = {
   /**
    * Initiate B2C withdrawal (withdraw to M-Pesa)
    */
-  initiateWithdrawal: async (phoneNumber, amount, purpose = 'BusinessPayment') => {
+  initiateWithdrawal: async (phoneNumber, amount, purpose = 'BusinessPayment', isMock = false) => {
     return apiCall('/finance/b2c/initiate/', {
       method: 'POST',
       body: JSON.stringify({
         phone_number: phoneNumber,
         amount: amount,
         purpose: purpose,
+        is_mock: isMock,
       }),
     });
   },

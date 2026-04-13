@@ -116,6 +116,29 @@ export default function Settings() {
           </button>
         </div>
 
+        <h3 className="section-title mt-4">Developer Options</h3>
+        <div className="settings-section card-glass">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <h4>Dev Mode (Mock Transactions)</h4>
+              <p className="hint" style={{ margin: 0 }}>Enable to bypass real M-Pesa APIs for testing.</p>
+            </div>
+            <label className="toggle-switch">
+              <input 
+                type="checkbox" 
+                checked={localStorage.getItem('isMockMode') === 'true'} 
+                onChange={(e) => {
+                  localStorage.setItem('isMockMode', e.target.checked);
+                  // Force re-render
+                  setSaving(true);
+                  setTimeout(() => setSaving(false), 50);
+                }} 
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </div>
+
         <button className="logout-btn card-glass" onClick={() => navigate('/logout')}>
           <LogOut size={20} />
           <span>Log Out</span>

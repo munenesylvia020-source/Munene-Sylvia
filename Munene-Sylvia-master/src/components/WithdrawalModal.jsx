@@ -24,7 +24,8 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
         return;
       }
 
-      const data = await finance.initiateWithdrawal(phoneNumber, amountNum, purpose);
+      const isMock = localStorage.getItem('isMockMode') === 'true';
+      const data = await finance.initiateWithdrawal(phoneNumber, amountNum, purpose, isMock);
 
       setSuccess('Withdrawal initiated! Funds will be disbursed to M-Pesa.');
       if (onSuccess) onSuccess(data);
@@ -58,6 +59,9 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
 
         <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ArrowUpFromLine color="var(--color-error)" /> Withdraw Funds
+          {localStorage.getItem('isMockMode') === 'true' && (
+            <span style={{ background: 'var(--color-warning)', color: '#000', padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>DEV MODE</span>
+          )}
         </h2>
         <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', marginBottom: '16px' }}>Move funds from your wallet to any M-Pesa number.</p>
 

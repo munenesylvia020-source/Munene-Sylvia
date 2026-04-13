@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class DarajaClient:
     """M-Pesa Daraja API Client for sandbox environment"""
     
-    # Sandbox URLs
+    # Sandbox URL will change it later for production if 
     BASE_URL = "https://sandbox.safaricom.co.ke"
     AUTH_URL = f"{BASE_URL}/oauth/v1/generate?grant_type=client_credentials"
     C2B_URL = f"{BASE_URL}/mpesa/c2b/v1/registerurl"

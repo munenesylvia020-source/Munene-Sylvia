@@ -17,7 +17,8 @@ const DepositModal = ({ isOpen, onClose, onSuccess, studentInfo }) => {
     setLoading(true);
 
     try {
-      const data = await finance.initiateDeposit(phoneNumber, parseFloat(amount));
+      const isMock = localStorage.getItem('isMockMode') === 'true';
+      const data = await finance.initiateDeposit(phoneNumber, parseFloat(amount), 'Deposit', isMock);
       
       setSuccess('Deposit initiated! Check your phone for the M-Pesa prompt.');
       

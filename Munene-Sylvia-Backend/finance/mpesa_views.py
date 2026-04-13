@@ -171,6 +171,7 @@ class InitiateC2BView(APIView):
         try:
             phone_number = request.data.get('phone_number')
             amount = request.data.get('amount')
+            is_mock = request.data.get('is_mock', False)
             
             if not phone_number or not amount:
                 return Response(
@@ -207,7 +208,7 @@ class InitiateC2BView(APIView):
             client = DarajaClient()
             
             # --- LOCAL DEVELOPMENT MOCK MODE ---
-            if not client.consumer_key:
+            if is_mock or not client.consumer_key:
                 logger.warning("Entering MOCK MODE (Deposit). Auto-completing.")
                 # Create Mock Transaction
                 from .models import Transaction
@@ -223,9 +224,7 @@ class InitiateC2BView(APIView):
                     'phone_number': validated_phone,
                     'amount': str(amount)
                 })
-            # -----------------------------------
-            
-            # Simulate C2B transaction for sandbox
+       
             try:
                 response = client.simulate_c2b_transaction(
                     phone_number=validated_phone,
@@ -275,6 +274,7 @@ class InitiateB2CView(APIView):
             phone_number = request.data.get('phone_number')
             amount = request.data.get('amount')
             purpose = request.data.get('purpose', 'BusinessPayment')
+            is_mock = request.data.get('is_mock', False)
             
             if not phone_number or not amount:
                 return Response(
@@ -315,7 +315,7 @@ class InitiateB2CView(APIView):
             
             try:
                 # --- LOCAL DEVELOPMENT MOCK MODE ---
-                if not client.consumer_key:
+                if is_mock or not client.consumer_key:
                     logger.warning("Entering MOCK MODE for B2C Withdrawal. Auto-completing.")
                     student_wallet.balance -= amount
                     student_wallet.save()
