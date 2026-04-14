@@ -2,16 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ExpenseKeypad from "../components/ExpenseKeypad";
 import BottomNav from "../components/BottomNav";
-import { addExpense, getBudgetOrDefault } from "../utils/budgetStore";
+import { budgetAllocation } from "../constants/budgetAllocation";
+import { finance } from "../services/api";
 import appLogo from '../assets/Penny Professor logo 1.png';
 import { FiArrowLeft, FiEdit3, FiList, FiSave, FiTag, FiTrash2 } from "react-icons/fi";
 
 export default function AddExpense() {
   const [amount, setAmount] = useState("");
-  const budget = getBudgetOrDefault();
-  const [selectedCategory, setSelectedCategory] = useState(budget.categories[0]?.name || "Other");
+  const categories = budgetAllocation.map(c => c.name);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0] || "Other");
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleInput = (key) => {
@@ -40,7 +42,7 @@ export default function AddExpense() {
 
   const clearAmount = () => setAmount("");
 
-  const handleSaveExpense = () => {
+  const handleSaveExpense = async () => {
     const parsedAmount = Number(amount);
 
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
@@ -48,18 +50,21 @@ export default function AddExpense() {
       return;
     }
 
+    setLoading(true);
     try {
-      addExpense({
+      await finance.addExpense({
         amount: parsedAmount,
         category: selectedCategory,
-        note
+        description: note || 'Expense'
       });
       setAmount("");
       setNote("");
       setError("");
       navigate("/activity");
     } catch (saveError) {
-      setError(saveError.message || "Could not save expense.");
+      setError(saveError.message || "Could not save expense to cloud.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,9 +92,9 @@ export default function AddExpense() {
             value={selectedCategory}
             onChange={(event) => setSelectedCategory(event.target.value)}
           >
-            {budget.categories.map((category) => (
-              <option key={category.name} value={category.name}>
-                {category.name}
+            {categories.map((catName) => (
+              <option key={catName} value={catName}>
+                {catName}
               </option>
             ))}
           </select>
@@ -117,9 +122,9 @@ export default function AddExpense() {
             <FiTrash2 className="expense-btn-icon" />
             Clear
           </button>
-          <button type="button" className="expense-save-btn" onClick={handleSaveExpense}>
+          <button type="button" className="expense-save-btn" onClick={handleSaveExpense} disabled={loading}>
             <FiSave className="expense-btn-icon" />
-            Save Expense
+            {loading ? 'Saving...' : 'Save Expense'}
           </button>
         </div>
          <button

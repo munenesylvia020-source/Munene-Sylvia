@@ -1,7 +1,7 @@
 import { formatCurrency } from "../utils/budgetStore";
-import { Home, Utensils, GraduationCap, PiggyBank, Car, Film, Zap, PieChart } from "lucide-react";
+import { Home, Utensils, GraduationCap, PiggyBank, Car, Film, Zap, PieChart, CalendarDays } from "lucide-react";
 
-export default function CategoryCard({ title, amountLeft, total, spent = 0 }) {
+export default function CategoryCard({ title, amountLeft, total, spent = 0, dueDate, onSetDueDate }) {
   const safeTotal = Number(total) || 0;
   const safeAmountLeft = Number(amountLeft) || 0;
   const safeSpent = Number(spent) || 0;
@@ -13,13 +13,37 @@ export default function CategoryCard({ title, amountLeft, total, spent = 0 }) {
 
   return (
     <article className="card-glass" style={{ padding: 'var(--spacing-4)', marginBottom: '0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-        <div style={{ background: 'var(--color-glass-icon)', padding: '10px', borderRadius: '12px' }}>
-          {getCategoryIcon(title)}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ background: 'var(--color-glass-icon)', padding: '10px', borderRadius: '12px' }}>
+            {getCategoryIcon(title)}
+          </div>
+          <div>
+            <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--color-text-secondary)' }}>{title}</h3>
+            <span style={{ fontSize: 'var(--text-base)', fontWeight: 600 }}>KES {formatCurrency(safeAmountLeft)}</span>
+          </div>
         </div>
-        <div>
-          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--color-text-secondary)' }}>{title}</h3>
-          <span style={{ fontSize: 'var(--text-base)', fontWeight: 600 }}>KES {formatCurrency(safeAmountLeft)}</span>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)' }}>
+          <CalendarDays size={14} color="var(--color-text-muted)" />
+          {dueDate ? (
+            <input 
+              type="date" 
+              value={dueDate} 
+              onChange={(e) => onSetDueDate?.(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', fontSize: '11px', outline: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            />
+          ) : (
+            <button 
+              onClick={() => {
+                const today = new Date().toISOString().split('T')[0];
+                onSetDueDate?.(today);
+              }}
+              style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '11px', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Set Due Date
+            </button>
+          )}
         </div>
       </div>
 

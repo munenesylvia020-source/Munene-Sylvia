@@ -11,7 +11,7 @@ from .serializers import (
     HELBAccountSerializer, DisbursementSerializer, DisbursementScheduleSerializer,
     DisbursementProjectionSerializer, ProjectionsResponseSerializer
 )
-from investments.models import AllocationPlan, InvestmentPosition
+from investments.models import AllocationPlan
 from django.db import transaction
 
 
@@ -177,7 +177,8 @@ class ProjectionViewSet(viewsets.ViewSet):
             next_expected_amount = next_disbursement.amount
             days_remaining = (next_expected_date - timezone.now().date()).days
         else:
-            next_expected_date = helb_account.calculate_next_disbursement().date()
+            next_d = helb_account.calculate_next_disbursement()
+            next_expected_date = next_d.date() if hasattr(next_d, 'date') else next_d
             next_expected_amount = None
             days_remaining = (next_expected_date - timezone.now().date()).days
         
@@ -245,16 +246,6 @@ class DisbursementTrackView(APIView):
 
             # Immediately trigger the 50/30/20 Budgeting Rule
             allocation = AllocationPlan.create_allocation(request.user, amount)
-
-            # Hard-route the 20% into an Investment MMF Position instantly
-            InvestmentPosition.objects.create(
-                student=request.user,
-                allocation=allocation,
-                fund_type='MMF',
-                fund_name='Safaricom Wealth MMF (Auto-Invest)',
-                principal_amount=allocation.investment_amount,
-                current_value=allocation.investment_amount
-            )
 
             helb_account.total_disbursed += amount
             helb_account.remaining_balance = max(Decimal('0.00'), helb_account.total_approved_amount - helb_account.total_disbursed)

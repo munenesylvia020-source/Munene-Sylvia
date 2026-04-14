@@ -15,7 +15,7 @@ import time
 import logging
 from decimal import Decimal
 
-from .models import MpesaTransaction, B2CTransaction, Transaction, Wallet
+from .models import MpesaTransaction, B2CTransaction, Transaction, Wallet, Expense
 from .serializers import MpesaTransactionSerializer, B2CTransactionSerializer
 from .mpesa_utils import DarajaClient, MpesaTransactionHandler, validate_phone_number, format_amount
 
@@ -331,6 +331,13 @@ class InitiateB2CView(APIView):
                         amount=amount, status='COMPLETED', description=f"MOCK B2C Withdrawal to {validated_phone}"
                     )
                     
+                    Expense.objects.create(
+                        student=request.user,
+                        description=f"MOCK B2C Withdrawal to {validated_phone}",
+                        category="Other",
+                        amount=amount
+                    )
+                    
                     return Response({
                         'status': 'success', 'message': 'MOCK MODE: Withdrawal completed instantly!',
                         'b2c_id': b2c_trans.id, 'phone_number': validated_phone, 'amount': str(amount),
@@ -362,7 +369,6 @@ class InitiateB2CView(APIView):
                 student_wallet.balance -= amount
                 student_wallet.save()
                 
-                # Create withdrawal transaction
                 Transaction.objects.create(
                     student=request.user,
                     wallet=student_wallet,
@@ -370,6 +376,13 @@ class InitiateB2CView(APIView):
                     amount=amount,
                     status='PENDING',
                     description=f"B2C Withdrawal to {validated_phone}"
+                )
+                
+                Expense.objects.create(
+                    student=request.user,
+                    description=f"B2C Withdrawal to {validated_phone}",
+                    category="Other",
+                    amount=amount
                 )
                 
                 return Response({

@@ -88,69 +88,111 @@ Automatically splits HELB disbursements:
 
 ## Setup & Installation
 
-### 1. Install Dependencies
+Follow these steps to get the backend running on your local machine. We use MySQL as our primary database and a virtual environment for dependencies.
+
+### 1. Set Up Virtual Environment & Dependencies
+
+First, create and activate a Python virtual environment, then install the required packages.
+
 ```bash
+# Create a virtual environment (if you don't have one)
+python -m venv .venv
+
+# Activate the virtual environment
+# On Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# On Windows Command Prompt:
+.\.venv\Scripts\activate.bat
+# On macOS/Linux:
+source .venv/bin/activate
+
+# Install all project dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Create Migrations & Database
+### 2. Configure Environment Variables
+
+The project uses `.env` files for configuration.
+1. Copy the `.env.example` file and rename it to `.env`.
+2. Add your local MySQL database credentials to the `.env` file!
+
+```env
+# Database Configuration
+DB_ENGINE=django.db.backends.mysql
+DB_NAME=pennyprof
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_HOST=127.0.0.1
+DB_PORT=3306
+```
+
+### 3. Set Up MySQL Database
+
+Ensure you have MySQL Server running locally.
+
 ```bash
+# Log into MySQL and create the database
+mysql -u root -p
+CREATE DATABASE pennyprof CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+exit;
+```
+
+### 4. Create Migrations & Database Tables
+
+Once the database is created, run Django migrations to build the tables:
+
+```bash
+# Make sure your virtual environment is activated!
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 3. Create Superuser (Admin)
+### 5. Create Superuser (Admin)
+
+Create an admin account so you can log into the Django Admin Dashboard.
+
 ```bash
 python manage.py createsuperuser
 ```
 
-### 4. Run Development Server
-```bash
-python manage.py runserver
-```
-
-The API will be available at `http://localhost:8000/api/v1/`
+---
 
 ## How to Run the Project
 
-### Quick Start (After Initial Setup)
+Running the project on a day-to-day basis is very simple once the initial setup is complete.
+
+### 1. Start the Django Server
+
+Always ensure your virtual environment is activated before running the server.
+
 ```bash
-# Activate virtual environment (if using venv)
-# On Windows PowerShell:
-pennyprof\.venv\Scripts\Activate.ps1
+# Activate virtual environment (if not already active)
+.\.venv\Scripts\Activate.ps1
 
-# Or on Command Prompt:
-# \.venv\Scripts\activate.bat
-
-# Start the Django development server
-python manage.py runserver
-
-# Access the application:
-# - API: http://localhost:8000/api/v1/
-# - Swagger Documentation: http://localhost:8000/api/docs/
-# - Admin Panel: http://localhost:8000/admin/
-```
-
-### Running with Virtual Environment
-```bash
-# If you have execution policy issues on Windows:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-# Then activate venv and run:\.venv\Scripts\Activate.ps1
+# Start the development server
 python manage.py runserver
 ```
 
-### Running Background Tasks (Optional)
+You can now access:
+- **API Base URL**: `http://localhost:8000/api/v1/`
+- **Swagger Documentation**: `http://localhost:8000/api/docs/`
+- **Admin Panel**: `http://localhost:8000/admin/`
+
+### 2. Running Background Tasks (Optional)
+
+If you are working on the Daily Interest Accrual or automated disbursing features, you need Celery.
+
 ```bash
-# Start Redis server (required for Celery)
+# 1. Start Redis server (make sure you have Redis installed)
 redis-server
 
-# In a new terminal, start Celery worker:
+# 2. Open a new terminal, activate venv, and start Celery worker
 celery -A pennyprof worker -l info
 
-# In another terminal, start Celery beat scheduler:
+# 3. Open another terminal, activate venv, and start Celery beat scheduler
 celery -A pennyprof beat -l info
 ```
+
 
 ## API Endpoints
 

@@ -1,5 +1,6 @@
 import BottomNav from "../components/BottomNav";
-import { formatCurrency, getExpenses } from "../utils/budgetStore";
+import { useState, useEffect } from "react";
+import { finance } from "../services/api";
 import appLogo from '../assets/Penny Professor logo 1.png';
 
 const formatDateTime = (dateString) => {
@@ -12,7 +13,22 @@ const formatDateTime = (dateString) => {
 };
 
 export default function Activity() {
-  const expenses = getExpenses();
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const res = await finance.getExpenses();
+        setExpenses(Array.isArray(res) ? res : []);
+      } catch (err) {
+        console.error("Failed to load cloud expenses", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExpenses();
+  }, []);
 
   return (
     <div className="activity-page">
@@ -21,7 +37,9 @@ export default function Activity() {
         <h1 className="activity-title">Expense Activity</h1>
         <p className="activity-subtitle">Recent transactions logged from your dashboard.</p>
 
-        {expenses.length === 0 ? (
+        {loading ? (
+          <div className="activity-empty"><p>Loading cloud expenses...</p></div>
+        ) : expenses.length === 0 ? (
           <div className="activity-empty">
             <p>No expenses logged yet.</p>
             <p>Use the Add page to create your first expense entry.</p>
@@ -35,8 +53,8 @@ export default function Activity() {
                   <p className="activity-note">{expense.note || "No note provided"}</p>
                 </div>
                 <div className="activity-item-side">
-                  <p className="activity-amount">KES {formatCurrency(expense.amount)}</p>
-                  <p className="activity-date">{formatDateTime(expense.createdAt)}</p>
+                  <p className="activity-amount">KES {Number(expense.amount).toLocaleString()}</p>
+                  <p className="activity-date">{formatDateTime(expense.date || expense.created_at)}</p>
                 </div>
               </article>
             ))}

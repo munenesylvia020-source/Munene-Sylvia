@@ -49,8 +49,19 @@ export default function AIChatWidget({ mpesaTransactions = [], b2cTransactions =
       Recent Withdrawals: ${JSON.stringify(b2cTransactions.slice(0, 5))}
       `;
 
+      const appKnowledge = `
+APP KNOWLEDGE BASE:
+You are embedded inside 'Penny Professor', a specialized personal finance app for students. 
+If the user asks how to use the app, guide them using these core features:
+1. HELB Loans (Home Tab): The user must first track their HELB loan deposit. This instantly activates the 50/30/20 Budgeting Rule to create categorized Envelopes (Food, Rent, Transport, etc).
+2. Analytics Tab: The user can view a macroscopic chart of their total Income vs Expenditure, and a Donut Chart showing exactly which Envelopes are draining fastest.
+3. Daily Limits (Settings Tab): Users can configure a strict 'Daily Limit' to prevent impulse spending.
+4. M-Pesa Integration: Users can log expenses or initiate native M-Pesa withdrawals directly from their digital wallet inside the app. Check the Activity tab to see history.
+Keep instructions conversational, concise, and direct!
+      `;
+
       // Adding a concise system instruction prefix to ensure the AI acts as a finance expert
-      const systemPrompt = `You are Penny, an expert personal finance AI assistant for a budgeting app. Keep your answers concise, friendly, and formatted. NEVER use emojis in your response. Here are the user's recent transactions for context: ${txContext}. The user says: ${inputValue}`;
+      const systemPrompt = `You are Penny, an expert personal finance AI assistant for a budgeting app. Keep your answers concise, friendly, and structured purely in plain text. DO NOT use markdown formatting, do not use asterisks (*), do not use bolding or bulleted lists. Simply use newlines to separate your points. NEVER use emojis.\n\n${appKnowledge}\n\nHere are the user's recent transactions for context: ${txContext}.\n\nThe user says: ${inputValue}`;
 
       await generateContentStream(systemPrompt, (chunk) => {
         currentAssistantText += chunk;

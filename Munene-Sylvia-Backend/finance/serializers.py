@@ -56,7 +56,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'accommodation_limit', 'food_limit', 'transport_limit',
             'entertainment_limit', 'healthcare_limit', 'education_limit',
-            'utilities_limit', 'other_limit', 'updated_at'
+            'utilities_limit', 'other_limit', 'category_due_dates', 'updated_at'
         ]
         read_only_fields = ['id', 'updated_at']
 

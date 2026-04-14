@@ -1,4 +1,4 @@
-﻿try:
+try:
     from rest_framework import urlpatterns as _drf_urlpatterns
     from django.urls import register_converter as _django_register_converter
 
@@ -12,3 +12,7 @@
 except Exception:
     pass
 
+import pymysql
+pymysql.install_as_MySQLdb()
+import MySQLdb
+MySQLdb.version_info = (2, 2, 1, "final", 0)

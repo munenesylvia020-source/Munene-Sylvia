@@ -11,42 +11,69 @@ from .serializers import StudentRegistrationSerializer, StudentDetailSerializer
 Student = get_user_model()
 
 
+import firebase_admin
+from firebase_admin import auth as firebase_auth
+
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        student = Student.objects.filter(email__iexact=email).first()
-        if student is None:
-            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        user = authenticate(request, username=student.username, password=password)
-        if user is None:
-            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token, _ = Token.objects.get_or_create(user=user)
-        django_login(request, user)
+        firebase_token = request.data.get('firebase_token')
         
-        user_data = StudentDetailSerializer(user).data
-        user_data['has_completed_onboarding'] = user.has_completed_onboarding
-        
-        return Response({'token': token.key, 'user': user_data})
+        if not firebase_token:
+            return Response({'error': 'Firebase token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            decoded_token = firebase_auth.verify_id_token(firebase_token, clock_skew_seconds=60)
+            uid = decoded_token.get('uid')
+            email = decoded_token.get('email')
+            
+            student = Student.objects.filter(firebase_uid=uid).first()
+            if not student and email:
+                student = Student.objects.filter(email__iexact=email).first()
+                if student:
+                    student.firebase_uid = uid
+                    student.save(update_fields=['firebase_uid'])
+            
+            if not student:
+                return Response({'error': 'User not found in system. Please register first.'}, status=status.HTTP_404_NOT_FOUND)
+                
+            token, _ = Token.objects.get_or_create(user=student)
+            
+            user_data = StudentDetailSerializer(student).data
+            user_data['has_completed_onboarding'] = student.has_completed_onboarding
+            
+            return Response({'token': token.key, 'user': user_data})
+            
+        except Exception as e:
+            return Response({'error': f'Invalid Firebase token: {str(e)}'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = StudentRegistrationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        student = serializer.save()
-        token, _ = Token.objects.get_or_create(user=student)
-        return Response({'token': token.key, 'user': StudentDetailSerializer(student).data}, status=status.HTTP_201_CREATED)
+        firebase_token = request.data.get('firebase_token')
+        
+        if not firebase_token:
+            return Response({'error': 'Firebase token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            decoded_token = firebase_auth.verify_id_token(firebase_token, clock_skew_seconds=60)
+            uid = decoded_token.get('uid')
+            
+            # Use serializer to validate incoming extra fields (username, first_name etc)
+            serializer = StudentRegistrationSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            # Save student and inject firebase_uid
+            student = serializer.save(firebase_uid=uid)
+            token, _ = Token.objects.get_or_create(user=student)
+            
+            return Response({'token': token.key, 'user': StudentDetailSerializer(student).data}, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response({'error': f'Registration failed: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
@@ -57,7 +84,6 @@ class LogoutView(APIView):
             request.user.auth_token.delete()
         except Exception:
             pass
-        django_logout(request)
         return Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
 
 

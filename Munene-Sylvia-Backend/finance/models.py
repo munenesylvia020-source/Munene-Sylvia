@@ -202,6 +202,12 @@ class Budget(models.Model):
         help_text="Monthly other limit"
     )
     
+    category_due_dates = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Expected disbursement dates per category, e.g. {'Rent': '2026-05-01'}"
+    )
+    
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

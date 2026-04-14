@@ -6,8 +6,7 @@ import DepositModal from "../components/DepositModal";
 import WithdrawalModal from "../components/WithdrawalModal";
 import AIChatWidget from "../components/AIChatWidget";
 import { useNavigate } from "react-router-dom";
-import { getDashboardSummary } from "../utils/budgetStore";
-import { finance } from "../services/api";
+import { finance, helb } from "../services/api";
 import { Bell, PlusCircle, User, LogOut, Download, Upload, TrendingUp, ShieldCheck } from "lucide-react";
 
 import appLogo from '../assets/Penny Professor logo 1.png';
@@ -15,8 +14,11 @@ import '../styles/dashboard.css';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const summary = getDashboardSummary();
+  const [summary, setSummary] = useState({ categories: [], totalAmount: 0, totalSpent: 0, totalRemaining: 0, expenses: [] });
+  const [loadingSummary, setLoadingSummary] = useState(true);
   const [realBalance, setRealBalance] = useState(0);
+  const [walletBal, setWalletBal] = useState(0);
+  const [helbBal, setHelbBal] = useState(0);
   const [todayRemaining, setTodayRemaining] = useState(0);
   const [dailyLimitActive, setDailyLimitActive] = useState(false);
   const [loadingDaily, setLoadingDaily] = useState(true);
@@ -32,17 +34,75 @@ export default function Dashboard() {
   const [isPollingB2c, setIsPollingB2c] = useState(false);
 
   useEffect(() => {
+    loadSummary();
     loadWalletBalance();
     loadDailyLimitInfo();
     loadMpesaTransactions();
     loadB2cTransactions();
   }, []);
 
+  const loadSummary = async () => {
+    try {
+      setLoadingSummary(true);
+      const [budgetRes, expensesRes] = await Promise.all([
+        finance.getBudget().catch(() => ({})),
+        finance.getExpenses().catch(() => [])
+      ]);
+      
+      const exps = Array.isArray(expensesRes) ? expensesRes : [];
+      let mappedCategories = [
+        { name: 'Rent', amount: Number(budgetRes.accommodation_limit || 0) },
+        { name: 'Food', amount: Number(budgetRes.food_limit || 0) },
+        { name: 'Tuition & Academic', amount: Number(budgetRes.education_limit || 0) },
+        { name: 'Personal', amount: Number(budgetRes.entertainment_limit || 0) },
+        { name: 'Savings', amount: Number(budgetRes.other_limit || 0) }
+      ];
+      
+      // Calculate spent per category
+      const expensesByCategory = exps.reduce((acc, exp) => {
+        const key = exp.category || "Other";
+        acc[key] = (acc[key] || 0) + Number(exp.amount);
+        return acc;
+      }, {});
+
+      const datesObj = budgetRes.category_due_dates || {};
+
+      mappedCategories = mappedCategories.map(cat => ({
+        ...cat,
+        allocated: cat.amount,
+        spent: expensesByCategory[cat.name] || 0,
+        remaining: Math.max(0, cat.amount - (expensesByCategory[cat.name] || 0)),
+        dueDate: datesObj[cat.name] || null
+      }));
+      
+      const totalAmount = mappedCategories.reduce((sum, c) => sum + c.amount, 0);
+      const totalSpent = exps.reduce((sum, e) => sum + Number(e.amount), 0);
+      
+      setSummary({
+        categories: mappedCategories,
+        totalAmount,
+        totalSpent,
+        totalRemaining: Math.max(0, totalAmount - totalSpent),
+        expenses: exps
+      });
+    } catch(err) {
+      console.error('Error fetching summary:', err);
+    } finally {
+      setLoadingSummary(false);
+    }
+  };
+
   const loadWalletBalance = async () => {
     try {
-      const resp = await finance.getWallet();
-      const bal = Array.isArray(resp) ? resp[0]?.balance : resp?.balance;
-      setRealBalance(Number(bal || 0));
+      const [walletResp, helbResp] = await Promise.all([
+        finance.getWallet().catch(() => ({ balance: 0 })),
+        helb.getAccount().catch(() => ({ remaining_balance: 0 }))
+      ]);
+      const bal = Array.isArray(walletResp) ? walletResp[0]?.balance : walletResp?.balance;
+      const hBal = helbResp?.remaining_balance || 0;
+      setWalletBal(Number(bal || 0));
+      setHelbBal(Number(hBal || 0));
+      setRealBalance(Number(bal || 0) + Number(hBal || 0));
     } catch (error) {
       console.error('Error fetching wallet balance:', error);
     }
@@ -126,9 +186,28 @@ export default function Dashboard() {
     loadMpesaTransactions(); 
     loadWalletBalance(); 
   };
-  const handleWithdrawalSuccess = () => { 
+  const handleWithdrawalSuccess = async (data) => { 
+    if (data && data.amount) {
+        try {
+            await finance.addExpense({ amount: Number(data.amount), category: 'Other', description: 'M-Pesa Withdrawal' });
+            loadSummary(); // Refresh envelopes securely
+        } catch(e) { console.error('Failed to update expense', e); }
+    }
     loadB2cTransactions(); 
     loadWalletBalance(); 
+    loadDailyLimitInfo();
+  };
+
+  const handleSetDueDate = async (categoryName, dateValue) => {
+    try {
+      const currentRes = await finance.getBudget();
+      const existingDates = currentRes.category_due_dates || {};
+      existingDates[categoryName] = dateValue;
+      await finance.updateBudget({ category_due_dates: existingDates });
+      loadSummary();
+    } catch (e) {
+      console.error("Failed to update due date", e);
+    }
   };
 
   return (
@@ -153,11 +232,13 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Balance Card */}
-        <BalanceCard
-          balance={realBalance}
-          onDeposit={handleDeposit}
-          onWithdraw={handleWithdraw}
+
+        <BalanceCard 
+          totalBalance={realBalance} 
+          walletBalance={walletBal}
+          helbBalance={helbBal}
+          onDeposit={() => setDepositModalOpen(true)} 
+          onWithdraw={() => setWithdrawalModalOpen(true)} 
         />
 
         {/* Helb Shortcut CTA */}
@@ -201,17 +282,23 @@ export default function Dashboard() {
         )}
 
         <h3 className="section-title">Envelopes</h3>
-        <div className="dashboard-categories">
-          {summary.categories.map((category) => (
-            <CategoryCard
-              key={category.name}
-              title={category.name}
-              amountLeft={category.remaining}
-              total={category.allocated}
-              spent={category.spent}
-            />
-          ))}
-        </div>
+        {loadingSummary ? (
+          <p className="hint text-center">Syncing cloud envelopes...</p>
+        ) : (
+          <div className="dashboard-categories">
+            {summary.categories.map((category) => (
+              <CategoryCard
+                key={category.name}
+                title={category.name}
+                amountLeft={category.remaining}
+                total={category.allocated}
+                spent={category.spent}
+                dueDate={category.dueDate}
+                onSetDueDate={(val) => handleSetDueDate(category.name, val)}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Transactions */}
         <div className="transactions-section card-glass mt-4">
@@ -266,7 +353,7 @@ export default function Dashboard() {
       </section>
 
       <DepositModal isOpen={depositModalOpen} onClose={() => setDepositModalOpen(false)} onSuccess={handleDepositSuccess} />
-      <WithdrawalModal isOpen={withdrawalModalOpen} onClose={() => setWithdrawalModalOpen(false)} onSuccess={handleWithdrawalSuccess} walletBalance={realBalance} studentInfo={{}} />
+      <WithdrawalModal isOpen={withdrawalModalOpen} onClose={() => setWithdrawalModalOpen(false)} onSuccess={handleWithdrawalSuccess} walletBalance={realBalance} dailyLimitActive={dailyLimitActive} todayRemaining={todayRemaining} studentInfo={{}} />
 
       <AIChatWidget mpesaTransactions={mpesaTransactions} b2cTransactions={b2cTransactions} />
       <BottomNav />

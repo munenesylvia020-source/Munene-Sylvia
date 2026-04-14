@@ -3,7 +3,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { budgetAllocation } from '../constants/budgetAllocation';
 import appLogo from '../assets/Penny Professor logo 1.png';
-import { saveBudget } from '../utils/budgetStore';
+import { finance } from '../services/api';
 
 const BudgetConfirm = () => {
   const navigate = useNavigate();
@@ -39,9 +39,22 @@ const BudgetConfirm = () => {
       };
     });
 
-  const handleConfirm = () => {
-    saveBudget({ totalAmount, categories });
-    navigate('/allocation', { state: { totalAmount, categories } });
+  const handleConfirm = async () => {
+    const getAmount = (name) => categories.find(c => c.name === name)?.amount || 0;
+    
+    try {
+      await finance.updateBudget({
+        accommodation_limit: getAmount('Rent'),
+        food_limit: getAmount('Food'),
+        education_limit: getAmount('Tuition & Academic'),
+        entertainment_limit: getAmount('Personal'),
+        other_limit: getAmount('Savings')
+      });
+      navigate('/allocation', { state: { totalAmount, categories } });
+    } catch(err) {
+      console.error("Failed to sync budget to cloud", err);
+      alert("Failed to sync budget to cloud. Please try again.");
+    }
   };
 
   const handleAdjust = () => {

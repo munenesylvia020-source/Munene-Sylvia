@@ -1,19 +1,14 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import appLogo from '../assets/Penny Professor logo 1.png';
-import { saveBudget } from '../utils/budgetStore';
+
 
 function Allocation() {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const totalAmount = Number(location.state?.totalAmount);
-    const categories = location.state?.categories;
-
-    if (totalAmount > 0 && Array.isArray(categories) && categories.length > 0) {
-      saveBudget({ totalAmount, categories });
-    }
+    // Cloud sync was handled in BudgetConfirm.jsx
   }, [location.state]);
 
   return (

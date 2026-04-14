@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, TrendingUp, Lock, ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { auth } from '../services/api';
 import '../styles/onboarding.css';
 
 const Onboarding = () => {
@@ -31,12 +32,17 @@ const Onboarding = () => {
     }
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(prev => prev + 1);
     } else {
-      // Finished onboarding! Move to dashboard.
-      navigate('/dashboard');
+      // Finished onboarding! Move to HELB amount setup.
+      try {
+        await auth.completeOnboarding();
+      } catch (err) {
+        console.error("Failed to complete onboarding", err);
+      }
+      navigate('/helb-amount');
     }
   };
 

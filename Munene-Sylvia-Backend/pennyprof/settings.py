@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -92,8 +94,12 @@ WSGI_APPLICATION = 'pennyprof.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.mysql'),
+        'NAME': config('DB_NAME', default='pennyprof'),
+        'USER': config('DB_USER', default='root'),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='3306'),
     }
 }
 
@@ -270,6 +276,22 @@ CELERY_BEAT_SCHEDULE = {
     'verify-disbursement-status': {
         'task': 'finance.tasks.verify_daily_disbursement_status',
         'schedule': crontab(minute='*/5'),  # Run every 5 minutes
-        'options': {'queue': 'default', 'expires': 5 * 60}  # Expire after 5 minutes
+        'options': {'queue': 'default', 'expires': 5 * 60}
     },
+    'accrue-daily-interest': {
+        'task': 'investments.tasks.accrue_daily_interest',
+        'schedule': crontab(minute=0, hour=20),  # Run at 8 PM daily
+    },
+    'check-overdue-disbursements': {
+        'task': 'helb.tasks.check_overdue_disbursements',
+        'schedule': crontab(minute=0, hour=9),  # Run at 9 AM daily
+    },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'accounts.firebase_auth.FirebaseAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }

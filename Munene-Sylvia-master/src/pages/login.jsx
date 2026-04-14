@@ -55,8 +55,13 @@ const handleSubmit = async (e) => {
   try {
     const response = await auth.login(formData.email, formData.password);
     console.log('Login successful:', response);
-    // Navigate to HELB amount page after successful login
-    navigate('/helb-amount');
+    
+    // Navigate to onboarding if not completed, else to HELB amount
+    if (response.user && response.user.has_completed_onboarding === false) {
+      navigate('/onboarding');
+    } else {
+      navigate('/helb-amount');
+    }
   } catch (error) {
     console.error('Login error:', error);
     setServerError(error.message || 'Login failed. Please check your credentials.');

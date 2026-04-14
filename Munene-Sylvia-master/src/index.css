@@ -19,26 +19,26 @@
   /* =====================
      BRAND COLORS
   ===================== */
-  --color-primary: #818cf8;        /* Vibrant Indigo */
-  --color-primary-light: #a5b4fc;
-  --color-primary-dark: #6366f1;
+  --color-primary: #6366f1;        /* Electric Indigo */
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #4f46e5;
   
-  --color-accent: #38bdf8;         /* Light Sky Blue */
+  --color-accent: #00e676;         /* Neon Mint / Spring Green */
   --color-secondary: #f472b6;      /* Pink */
 
-  --color-background: #09090b;     /* Deep True Dark (Zinc 950) */
-  --color-surface: #18181b;        /* Card Background (Zinc 900) */
-  --color-surface-hover: #27272a;  /* Hover Card Background */
-  --color-surface-glass: rgba(24, 24, 27, 0.6); /* Glassmorphism Panel */
+  --color-background: #050505;     /* AMOLED Obsidian Black */
+  --color-surface: #121217;        /* Raised Deep Gray */
+  --color-surface-hover: #1c1c24;  
+  --color-surface-glass: rgba(18, 18, 23, 0.6); 
 
-  --color-border: #27272a;         /* Subtle border */
-  --color-border-hover: #3f3f46;
+  --color-border: rgba(255, 255, 255, 0.12); /* Sharp distinct outline */
+  --color-border-hover: rgba(255, 255, 255, 0.25);
 
-  /* Gradient (page backgrounds & primary buttons) */
+  /* Gradient */
   --color-grad-primary: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
-  --color-grad-accent: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+  --color-grad-accent: linear-gradient(135deg, #0ea5e9 0%, #00e676 100%);
   --color-grad-secondary: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-  --color-grad-surface: linear-gradient(180deg, rgba(24, 24, 27, 0.4) 0%, rgba(24, 24, 27, 0.8) 100%);
+  --color-grad-surface: linear-gradient(180deg, rgba(18, 18, 23, 0.4) 0%, rgba(18, 18, 23, 0.8) 100%);
 
   --page-bg: var(--color-background);
   --button-bg: var(--color-primary);
@@ -46,14 +46,14 @@
   /* Button baseline */
   --btn-bg: var(--color-primary);
   --btn-bg-hover: var(--color-primary-dark);
-  --btn-secondary: #27272a;
-  --btn-secondary-hover: #3f3f46;
+  --btn-secondary: rgba(255,255,255,0.1);
+  --btn-secondary-hover: rgba(255,255,255,0.15);
 
   /* =====================
      STATUS COLORS
   ===================== */
-  --color-success: #10b981;        
-  --color-success-bg: rgba(16, 185, 129, 0.1);
+  --color-success: #00e676;        
+  --color-success-bg: rgba(0, 230, 118, 0.1);
   --color-warning: #f59e0b;        
   --color-warning-bg: rgba(245, 158, 11, 0.1);
   --color-error: #ef4444;          
@@ -61,16 +61,16 @@
   --color-info: #3b82f6;           
 
   --color-glass-icon: rgba(255, 255, 255, 0.05);
-  --color-backdrop-overlay: rgba(0, 0, 0, 0.2);
-  --text-shadow-hero: 0 2px 10px rgba(0,0,0,0.5);
+  --color-backdrop-overlay: rgba(0, 0, 0, 0.3);
+  --text-shadow-hero: 0 2px 10px rgba(0,0,0,0.8);
 
   /* =====================
      TEXT SHADES
   ===================== */
-  --color-text-primary: #f4f4f5;     /* Zinc 100 */
-  --color-text-secondary: #a1a1aa;   /* Zinc 400 */
-  --color-text-heading: #ffffff;     /* White */
-  --color-text-muted: #71717a;       /* Zinc 500 */
+  --color-text-primary: #ffffff;     /* Pure Crisp White */
+  --color-text-secondary: #a0a0b0;   /* Cool Lavender Gray */
+  --color-text-heading: #ffffff;     
+  --color-text-muted: #64748b;     
 
   /* =====================
      BUDGET CATEGORY COLORS
@@ -121,12 +121,13 @@
   --radius-full: 9999px;
 
   /* =====================
-     SHADOWS (Tailored for dark mode)
+     SHADOWS (Tailored for dark mode pop)
   ===================== */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.8);
   --shadow-glow-primary: 0 0 16px rgba(99, 102, 241, 0.4);
+  --shadow-glass: inset 0 1px 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.5);
 
   --shadow-card: var(--shadow-md);
   --shadow-card-hover: var(--shadow-lg);
@@ -141,31 +142,32 @@
 
 /* PREMIUM LIGHT MODE OVERRIDES */
 :root.light-mode {
-  --color-background: #f1f5f9;
+  --color-background: #f8fafc;
   --color-surface: #ffffff;
-  --color-surface-hover: #f4f4f5;
-  --color-surface-glass: rgba(255, 255, 255, 0.7);
+  --color-surface-hover: #f1f5f9;
+  --color-surface-glass: rgba(255, 255, 255, 0.9);
 
   --color-glass-icon: rgba(0, 0, 0, 0.05);
   --color-backdrop-overlay: rgba(0, 0, 0, 0.05);
   --text-shadow-hero: none;
 
-  --color-border: #e4e4e7;
-  --color-border-hover: #d4d4d8;
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
 
-  --color-text-primary: #18181b;
-  --color-text-secondary: #52525b;
-  --color-text-heading: #09090b;
-  --color-text-muted: #71717a;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-heading: #020617;
+  --color-text-muted: #94a3b8;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glass: inset 0 1px 0 rgba(255,255,255,1), 0 10px 25px -5px rgba(0,0,0,0.06);
 
-  --btn-secondary: #f4f4f5;
-  --btn-secondary-hover: #e4e4e7;
+  --btn-secondary: #f1f5f9;
+  --btn-secondary-hover: #e2e8f0;
 
-  --color-grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 100%);
+  --color-grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 /* RESET */
@@ -260,13 +262,13 @@ input {
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translate3d(30px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes pulseSoft {
@@ -294,17 +296,25 @@ input {
 /* Hard-override card-glass to systematically slide-up smoothly whenever rendered! */
 .card-glass {
   background: var(--color-surface-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--spacing-4);
   box-shadow: var(--shadow-glass);
   color: var(--color-text-primary);
+  
+  /* GPU Hardware Acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
   animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .card-glass:hover {
   border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 

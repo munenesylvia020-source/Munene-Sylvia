@@ -1,13 +1,8 @@
-/**
- * API Service - Handles all HTTP requests to the backend
- * Base URL is configurable via environment variables
- */
+import { auth as firebaseAuth } from '../firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-/**
- * Helper function to make API requests
- */
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
@@ -15,10 +10,16 @@ const apiCall = async (endpoint, options = {}) => {
     'Content-Type': 'application/json',
   };
 
-  // Add token if available
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    defaultHeaders['Authorization'] = `Token ${token}`;
+  // Check for firebase user token
+  if (firebaseAuth.currentUser) {
+    const token = await firebaseAuth.currentUser.getIdToken();
+    defaultHeaders['Authorization'] = `Bearer ${token}`; // Use Bearer for Firebase Middleware
+  } else {
+    // Fallback to local storage token if not fully synced yet (or backend generated token)
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      defaultHeaders['Authorization'] = `Token ${token}`;
+    }
   }
 
   const config = {
@@ -28,7 +29,6 @@ const apiCall = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const validationError =
@@ -42,13 +42,9 @@ const apiCall = async (endpoint, options = {}) => {
         data: errorData,
       };
     }
-
     return await response.json();
   } catch (error) {
-    // Re-throw fetch errors
-    if (error.status) {
-      throw error;
-    }
+    if (error.status) throw error;
     throw {
       status: 0,
       message: error.message || 'Network error',
@@ -57,59 +53,53 @@ const apiCall = async (endpoint, options = {}) => {
   }
 };
 
-/**
- * Authentication API calls
- */
 export const auth = {
-  /**
-   * Login user
-   * @param {string} email - User email
-   * @param {string} password - User password
-   * @returns {Promise<{token: string, user: Object}>}
-   */
   login: async (email, password) => {
-    const data = await apiCall('/auth/login/', {
+    // Firebase auth
+    const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    const firebase_token = await userCredential.user.getIdToken();
+
+    // Pass token to backend for session map
+    const data = await fetch(`${API_BASE_URL}/auth/login/`, {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firebase_token }),
+    }).then(r => r.json());
     
-    // Store token
     if (data.token) {
       localStorage.setItem('authToken', data.token);
     }
-    
     return data;
   },
 
-  /**
-   * Register new user
-   * @param {Object} userData - {email, password, first_name, last_name, etc.}
-   * @returns {Promise<{token: string, user: Object}>}
-   */
   signup: async (userData) => {
-    const data = await apiCall('/auth/register/', {
+    // Firebase create
+    const userCredential = await createUserWithEmailAndPassword(firebaseAuth, userData.email, userData.password);
+    const firebase_token = await userCredential.user.getIdToken();
+
+    // Create tracking model on backend
+    const data = await fetch(`${API_BASE_URL}/auth/register/`, {
       method: 'POST',
-      body: JSON.stringify(userData),
-    });
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...userData, firebase_token }),
+    }).then(r => r.json());
     
-    // Store token
     if (data.token) {
       localStorage.setItem('authToken', data.token);
     }
-    
     return data;
   },
 
-  /**
-   * Logout user
-   */
   logout: async () => {
     try {
-      await apiCall('/auth/logout/', {
-        method: 'POST',
-      });
+      if (firebaseAuth.currentUser) {
+        await signOut(firebaseAuth);
+      }
+      await apiCall('/auth/logout/', { method: 'POST' });
     } finally {
       localStorage.removeItem('authToken');
+      localStorage.removeItem('helb_budget_data');
+      localStorage.removeItem('helb_expenses_data');
     }
   },
 
@@ -144,6 +134,16 @@ export const auth = {
     return apiCall('/auth/students/update_phone/', {
       method: 'POST',
       body: JSON.stringify({ phone_number: phoneNumber }),
+    });
+  },
+
+  /**
+   * Mark onboarding as complete
+   */
+  completeOnboarding: async () => {
+    return apiCall('/finance/fund-sources/complete-onboarding/', {
+      method: 'POST',
+      body: JSON.stringify({}),
     });
   },
 };
@@ -220,7 +220,7 @@ export const finance = {
    * Get wallet information
    */
   getWallet: async () => {
-    return apiCall('/finance/wallets/', { method: 'GET' });
+    return apiCall('/finance/wallets/my_wallet/', { method: 'GET' });
   },
 
   /**
@@ -334,6 +334,24 @@ export const finance = {
   getDisbursementHistory: async () => {
     return apiCall('/finance/daily-limit/disbursement_history/', { method: 'GET' });
   },
+  
+  getBalanceSnapshots: async () => {
+    return apiCall('/finance/balance-snapshots/', { method: 'GET' });
+  },
+
+  // ============ Fund Sources (Income Diversification) ============
+  getFundSources: async () => {
+    return apiCall('/finance/fund-sources/', { method: 'GET' });
+  },
+  addFundSource: async (data) => {
+    return apiCall('/finance/fund-sources/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  deleteFundSource: async (id) => {
+    return apiCall(`/finance/fund-sources/${id}/`, { method: 'DELETE' });
+  },
 };
 
 /**
@@ -363,18 +381,18 @@ export const helb = {
 /**
  * Investments API calls
  */
-export const invest = {
-  getPortfolioGrowth: async () => {
-    return apiCall('/invest/positions/portfolio_growth/', { method: 'GET' });
+export const investments = {
+  getPortfolio: async () => {
+    return apiCall('/investments/positions/portfolio_growth/', { method: 'GET' });
   },
-  getDailyAccruals: async () => {
-    return apiCall('/invest/positions/daily_accruals/', { method: 'GET' });
+  getPositions: async () => {
+    return apiCall('/investments/positions/', { method: 'GET' });
   },
-  allocate: async (totalAmount, fundType = 'MMF', fundName = 'Default MMF') => {
-    return apiCall('/invest/positions/allocate/', {
-      method: 'POST',
-      body: JSON.stringify({ total_amount: totalAmount, fund_type: fundType, fund_name: fundName }),
-    });
+  getAccruals: async () => {
+    return apiCall('/investments/accrual-logs/', { method: 'GET' });
+  },
+  getDailyForecast: async () => {
+    return apiCall('/investments/positions/daily_accruals/', { method: 'GET' });
   }
 };
 

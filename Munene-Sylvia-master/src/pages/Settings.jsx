@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../services/api';
-import { User, Phone, CheckCircle, TrendingUp, LogOut, ChevronRight } from 'lucide-react';
+import { User, Phone, CheckCircle, TrendingUp, LogOut, ChevronRight, Wallet } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import '../styles/settings.css';
 
@@ -36,6 +36,12 @@ export default function Settings() {
   const handleUpdatePhone = async () => {
     if (!phone) {
       setError('Please enter a valid M-Pesa phone number');
+      return;
+    }
+    
+    const phoneRegex = /^(2547|2541)\d{8}$|^0(7|1)\d{8}$/;
+    if (!phoneRegex.test(phone)) {
+      setError('Invalid format. Must be 2547..., 2541..., 07..., or 01...');
       return;
     }
     
@@ -111,6 +117,14 @@ export default function Settings() {
             <div className="item-text">
               <h4>Daily Limit Settings</h4>
               <p>Configure automatic M-Pesa disbursements</p>
+            </div>
+            <ChevronRight size={20} color="var(--color-text-muted)" />
+          </button>
+          <button className="settings-list-item" onClick={() => navigate('/income-sources')} style={{ borderTop: '1px solid var(--color-border)', marginTop: '8px', paddingTop: '16px' }}>
+            <Wallet size={20} color="var(--color-success)" />
+            <div className="item-text">
+              <h4>Income Engines</h4>
+              <p>Track allowances, jobs, and side hustles</p>
             </div>
             <ChevronRight size={20} color="var(--color-text-muted)" />
           </button>

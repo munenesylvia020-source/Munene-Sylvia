@@ -8,12 +8,15 @@ import AddExpense from './pages/AddExpense';
 import Activity from './pages/Activity';
 import DailyLimitSettings from './pages/DailyLimitSettings';
 import HelbAmount from './pages/HelbAmount';
+import HelbHistory from './pages/HelbHistory';
 import BudgetConfirm from './pages/BudgetConfirm';
 import Allocation from './pages/allocation';
 import BudgetAdjust from './pages/BudgetAdjust';
 import Logout from './pages/Logout';
-import Portfolio from './pages/Portfolio';
 import Settings from './pages/Settings';
+import Analytics from './pages/Analytics';
+import Vault from './pages/Vault';
+import IncomeSources from './pages/IncomeSources';
 import ProtectedRoute from './components/ProtectedRoute';
 import ThemeToggle from './components/ThemeToggle';
 
@@ -31,6 +34,14 @@ function App() {
           element={
             <ProtectedRoute>
               <HelbAmount />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/helb-history"
+          element={
+            <ProtectedRoute>
+              <HelbHistory />
             </ProtectedRoute>
           }
         />
@@ -60,21 +71,17 @@ function App() {
         />
         <Route
           path="/onboarding"
-          element={<Onboarding />}
+          element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/portfolio"
-          element={
-            <ProtectedRoute>
-              <Portfolio />
             </ProtectedRoute>
           }
         />
@@ -91,6 +98,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Activity />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vault"
+          element={
+            <ProtectedRoute>
+              <Vault />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/income-sources"
+          element={
+            <ProtectedRoute>
+              <IncomeSources />
             </ProtectedRoute>
           }
         />

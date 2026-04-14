@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowUpFromLine, Phone, X, AlertCircle, CheckCircle, Briefcase } from 'lucide-react';
 import { finance } from '../services/api';
 
-const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
+const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance, dailyLimitActive, todayRemaining }) => {
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [purpose, setPurpose] = useState('BusinessPayment');
@@ -18,8 +18,26 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
 
     try {
       const amountNum = parseFloat(amount);
+      if (amountNum <= 0) {
+        setError('Please enter a valid amount.');
+        setLoading(false);
+        return;
+      }
       if (amountNum > walletBalance) {
         setError(`Insufficient funds. You only have KES ${walletBalance?.toLocaleString()}`);
+        setLoading(false);
+        return;
+      }
+      
+      if (dailyLimitActive && amountNum > todayRemaining) {
+        setError(`Daily limit exceeded. You can only withdraw KES ${todayRemaining?.toLocaleString(undefined, {minimumFractionDigits:2})} more today.`);
+        setLoading(false);
+        return;
+      }
+
+      const phoneRegex = /^(2547|2541)\d{8}$|^0(7|1)\d{8}$/;
+      if (!phoneRegex.test(phoneNumber)) {
+        setError('Please enter a valid M-Pesa format (e.g. 2547... or 07...)');
         setLoading(false);
         return;
       }
@@ -102,7 +120,7 @@ const WithdrawalModal = ({ isOpen, onClose, onSuccess, walletBalance }) => {
           {error && <div style={{ color: 'var(--color-error)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><AlertCircle size={14}/> {error}</div>}
           {success && <div style={{ color: 'var(--color-success)', fontSize: 'var(--text-xs)', display: 'flex', gap: '4px' }}><CheckCircle size={14}/> {success}</div>}
 
-          <button type="submit" className="primary-btn" disabled={loading || !amount || !phoneNumber || parseFloat(amount) > walletBalance} style={{ width: '100%', marginTop: '8px' }}>
+          <button type="submit" className="primary-btn" disabled={loading || !amount || !phoneNumber || parseFloat(amount) > walletBalance || (dailyLimitActive && parseFloat(amount) > todayRemaining)} style={{ width: '100%', marginTop: '8px' }}>
             {loading ? 'Processing...' : 'Complete Withdrawal'}
           </button>
         </form>

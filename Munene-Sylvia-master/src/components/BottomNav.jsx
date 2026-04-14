@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, PlusCircle, Activity, PieChart, Settings, LogOut } from 'lucide-react';
+import { Home, PlusCircle, Activity, Settings, PieChart, Shield } from 'lucide-react';
 import '../styles/bottomNav.css';
 
 export default function BottomNav() {
@@ -10,9 +10,9 @@ export default function BottomNav() {
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard' },
-    { icon: PieChart, label: 'Portfolio', path: '/portfolio' },
+    { icon: Shield, label: 'Vault', path: '/vault' },
     { icon: PlusCircle, label: 'Add', path: '/add', isPrimary: true },
-    { icon: Activity, label: 'Activity', path: '/activity' },
+    { icon: PieChart, label: 'Analytics', path: '/analytics' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 

@@ -1,0 +1,104 @@
+/* src/styles/incomeSources.css */
+.income-sources-page {
+  padding-bottom: 80px;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.income-header {
+  padding: 24px 20px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.income-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.income-subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.income-content {
+  padding: 20px;
+}
+
+.add-source-form {
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-col {
+  flex: 1;
+}
+
+.source-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.source-details h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--color-text);
+}
+
+.source-details p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+.source-amount {
+  font-weight: 700;
+  color: var(--color-success);
+  margin-right: 16px;
+}
+
+.source-actions {
+  display: flex;
+  align-items: center;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-error);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.delete-btn:hover {
+  background: rgba(207, 102, 121, 0.1);
+}

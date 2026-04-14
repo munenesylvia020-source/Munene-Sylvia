@@ -9,6 +9,8 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    registrationNumber: '',
+    institutionName: '',
     password: '',
     confirmPassword: ''
   });
@@ -40,6 +42,14 @@ const Signup = () => {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
+    }
+
+    if (!formData.registrationNumber.trim()) {
+      newErrors.registrationNumber = 'Registration Number is required';
+    }
+
+    if (!formData.institutionName.trim()) {
+      newErrors.institutionName = 'Institution Name is required';
     }
     
     if (!formData.password) {
@@ -81,6 +91,8 @@ const Signup = () => {
         password: formData.password,
         first_name: firstName,
         last_name: lastName,
+        registration_number: formData.registrationNumber,
+        institution_name: formData.institutionName
       });
       console.log('Signup successful:', response);
       navigate('/login');
@@ -147,6 +159,42 @@ const Signup = () => {
             />
             {errors.email && (
               <p className="error-message">{errors.email}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="registrationNumber" className="form-label">
+              Registration Number
+            </label>
+            <input
+              type="text"
+              id="registrationNumber"
+              name="registrationNumber"
+              value={formData.registrationNumber}
+              onChange={handleChange}
+              placeholder="e.g. C026-01-0980/2026"
+              className={`form-input ${errors.registrationNumber ? 'input-error' : ''}`}
+            />
+            {errors.registrationNumber && (
+              <p className="error-message">{errors.registrationNumber}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="institutionName" className="form-label">
+              Institution Name
+            </label>
+            <input
+              type="text"
+              id="institutionName"
+              name="institutionName"
+              value={formData.institutionName}
+              onChange={handleChange}
+              placeholder="e.g. University of Nairobi"
+              className={`form-input ${errors.institutionName ? 'input-error' : ''}`}
+            />
+            {errors.institutionName && (
+              <p className="error-message">{errors.institutionName}</p>
             )}
           </div>
 
